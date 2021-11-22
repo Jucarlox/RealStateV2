@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.realstatev2.users.services;
 
 import com.salesianostriana.dam.realstatev2.services.base.BaseService;
+import com.salesianostriana.dam.realstatev2.users.dto.CreateGestorDto;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateUserDto;
 import com.salesianostriana.dam.realstatev2.users.model.User;
 import com.salesianostriana.dam.realstatev2.users.model.UserRole;
@@ -47,7 +48,7 @@ public class UserEntityService extends BaseService<User, Long, UserEntityReposit
         }
     }
 
-    public User saveGestor(CreateUserDto newGestor) {
+    public User saveGestor(CreateGestorDto newGestor) {
         if (newGestor.getPassword().contentEquals(newGestor.getPassword2())) {
             User user = User.builder()
                     .password(passwordEncoder.encode(newGestor.getPassword()))
@@ -58,6 +59,7 @@ public class UserEntityService extends BaseService<User, Long, UserEntityReposit
                     .nombre(newGestor.getNombre())
                     .email(newGestor.getEmail())
                     .role(UserRole.GESTOR)
+                    .inmobiliaria(newGestor.getInmobiliaria())
                     .build();
             try{
                 return save(user);
