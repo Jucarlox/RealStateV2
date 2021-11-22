@@ -15,13 +15,13 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name="users")
+@Table(name="USER")
 @EntityListeners(AuditingEntityListener.class)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserEntity implements UserDetails {
+public class User implements UserDetails {
     @Id
     @GeneratedValue
     private Long id;
@@ -35,6 +35,7 @@ public class UserEntity implements UserDetails {
     private String apellidos;
     private String direccion;
     private String telefono;
+    @Enumerated(EnumType.STRING)
     private UserRole role;
     private String avatar;
 
