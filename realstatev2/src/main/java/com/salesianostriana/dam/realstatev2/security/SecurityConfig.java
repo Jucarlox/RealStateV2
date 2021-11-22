@@ -1,5 +1,7 @@
 package com.salesianostriana.dam.realstatev2.security;
 
+import com.salesianostriana.dam.realstatev2.security.jwt.JwtAccessDeniedHandler;
+import com.salesianostriana.dam.realstatev2.security.jwt.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,12 +26,45 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
-    //private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAuthorizationFilter filter;
+    private final JwtAccessDeniedHandler accessDeniedHandler;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+
 
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                .and()
+                .authorizeRequests()
+                //.antMatchers(HttpMethod.POST, "/vivienda/**").hasRole("PROPIETARIO")
+                .antMatchers(HttpMethod.POST, "/auth/register/user").anonymous()
+                .antMatchers(HttpMethod.POST,"/h2-console/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/auth/register/gestor").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.POST,"/auth/register/admin").hasAnyRole("ADMIN")
+                .anyRequest().authenticated();
+
+        http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
 

@@ -21,7 +21,7 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
 
-    @PostMapping("/auth/register/user")
+    @PostMapping("/auth/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto){
         Authentication authentication= authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -32,8 +32,7 @@ public class AuthenticationController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Devolver una respuesta adecuada
-        // que incluya el token del usuario.
+
         String jwt = jwtProvider.generateToken(authentication);
 
 

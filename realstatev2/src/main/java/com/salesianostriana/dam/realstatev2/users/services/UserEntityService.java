@@ -25,17 +25,17 @@ public class UserEntityService extends BaseService<User, Long, UserEntityReposit
         return this.repositorio.findFirstByEmail(email).orElseThrow(()-> new UsernameNotFoundException("El "+ email + " no encontrado"));
     }
 
-    public User saveAdmin(CreateUserDto newAdmin) {
-        if (newAdmin.getPassword().contentEquals(newAdmin.getPassword2())) {
+    public User savePropietario(CreateUserDto newPropietario) {
+        if (newPropietario.getPassword().contentEquals(newPropietario.getPassword2())) {
             User user = User.builder()
-                    .password(passwordEncoder.encode(newAdmin.getPassword()))
-                    .avatar(newAdmin.getAvatar())
-                    .apellidos(newAdmin.getApellidos())
-                    .direccion(newAdmin.getDireccion())
-                    .telefono(newAdmin.getTelefono())
-                    .nombre(newAdmin.getNombre())
-                    .email(newAdmin.getEmail())
-                    .role(UserRole.ADMIN)
+                    .password(passwordEncoder.encode(newPropietario.getPassword()))
+                    .avatar(newPropietario.getAvatar())
+                    .apellidos(newPropietario.getApellidos())
+                    .direccion(newPropietario.getDireccion())
+                    .telefono(newPropietario.getTelefono())
+                    .nombre(newPropietario.getNombre())
+                    .email(newPropietario.getEmail())
+                    .role(UserRole.PROPIETARIO)
                     .build();
             try{
                 return save(user);
@@ -69,7 +69,7 @@ public class UserEntityService extends BaseService<User, Long, UserEntityReposit
         }
     }
 
-    public User savePropietario(CreateUserDto newAdmin) {
+    public User saveAdmin(CreateUserDto newAdmin) {
         if (newAdmin.getPassword().contentEquals(newAdmin.getPassword2())) {
             User user = User.builder()
                     .password(passwordEncoder.encode(newAdmin.getPassword()))

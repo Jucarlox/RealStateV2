@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.realstatev2.security.jwt;
 
 import com.salesianostriana.dam.realstatev2.users.model.User;
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -26,7 +27,7 @@ public class JwtProvider {
     private String jwtSecret;
 
     @Value("${jwt.duration:3600}") //1h
-    private int jwtLifeInSecond;
+    private int jwtLifeInSeconds;
 
     private JwtParser parser;
 
@@ -44,7 +45,7 @@ public class JwtProvider {
         Date tokenExpirationDate = Date
                 .from(LocalDateTime
                         .now()
-                        .plusSeconds(jwtLifeInSecond)
+                        .plusSeconds(jwtLifeInSeconds)
                         .atZone(ZoneId.systemDefault()).toInstant());
 
 
