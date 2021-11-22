@@ -24,7 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationEntryPoint authenticationEntryPoint;
+    //private final AuthenticationEntryPoint authenticationEntryPoint;
 
 
     @Override

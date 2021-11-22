@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private final AuthenticationManager authenticationManager;
-    private final JwtProvider jwtProvider;
+    //private final AuthenticationManager authenticationManager;
 
-    @PostMapping("/auth/register/user")
+
+    /*@PostMapping("/auth/register/user")
     public ResponseEntity<User> login(@RequestBody LoginDto loginDto){
         Authentication authentication= authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -27,5 +27,5 @@ public class AuthenticationController {
         );
 
 
-    }
+    }*/
 }

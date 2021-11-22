@@ -5,12 +5,15 @@ import com.salesianostriana.dam.realstatev2.users.dto.CreateUserDto;
 import com.salesianostriana.dam.realstatev2.users.model.User;
 import com.salesianostriana.dam.realstatev2.users.model.UserRole;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.salesianostriana.dam.realstatev2.users.repository.UserEntityRepository;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service("userDetailsService")
 @RequiredArgsConstructor
@@ -34,7 +37,11 @@ public class UserEntityService extends BaseService<User, Long, UserEntityReposit
                     .email(newAdmin.getEmail())
                     .role(UserRole.ADMIN)
                     .build();
-            return save(user);
+            try{
+                return save(user);
+            }catch (DataIntegrityViolationException ex){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre de ese usuario ya existe");
+            }
         } else {
             return null;
         }
@@ -52,7 +59,11 @@ public class UserEntityService extends BaseService<User, Long, UserEntityReposit
                     .email(newGestor.getEmail())
                     .role(UserRole.GESTOR)
                     .build();
-            return save(user);
+            try{
+                return save(user);
+            }catch (DataIntegrityViolationException ex){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre de ese usuario ya existe");
+            }
         } else {
             return null;
         }
@@ -70,7 +81,11 @@ public class UserEntityService extends BaseService<User, Long, UserEntityReposit
                     .email(newAdmin.getEmail())
                     .role(UserRole.ADMIN)
                     .build();
-            return save(user);
+            try{
+                return save(user);
+            }catch (DataIntegrityViolationException ex){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre de ese usuario ya existe");
+            }
         } else {
             return null;
         }
