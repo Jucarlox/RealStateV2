@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.realstatev2.users.model;
 
+import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,11 +40,18 @@ public class User implements UserDetails {
     private UserRole role;
     private String avatar;
 
+    @ManyToOne
+    @JoinColumn(name = "inmobiliaria_id", foreignKey = @ForeignKey(name = "FK_USER_INMOBILIARIA"), nullable = true)
+    private Inmobiliaria inmobiliaria;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
+
+
+
 
     @Override
     public String getUsername() {

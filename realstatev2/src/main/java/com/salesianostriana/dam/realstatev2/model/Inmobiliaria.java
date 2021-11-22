@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.realstatev2.model;
 
+import com.salesianostriana.dam.realstatev2.users.model.User;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -14,6 +15,8 @@ import java.util.List;
                 @NamedAttributeNode("viviendas")
         }
 )
+
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +25,7 @@ import java.util.List;
 @SuperBuilder
 public class Inmobiliaria implements Serializable {
         public static final String INMOBILIARIA_CON_VIVIENDA= "grafo-inmobiliaria-con-vivienda";
+        public static final String INMOBILIARIA_CON_USER= "grafo-inmobiliaria-con-user";
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         private Long id;
@@ -31,7 +35,13 @@ public class Inmobiliaria implements Serializable {
         private String telefono;
 
         @Builder.Default
-        @OneToMany(mappedBy = "inmobiliaria", fetch = FetchType.EAGER)
+        @OneToMany(mappedBy = "inmobiliaria", fetch = FetchType.LAZY)
 
         private List<Vivienda> viviendas=new ArrayList<>();
+
+        @Builder.Default
+        @OneToMany(mappedBy = "inmobiliaria",fetch = FetchType.EAGER)
+
+        private List<User> gestores=new ArrayList<>();
+
 }

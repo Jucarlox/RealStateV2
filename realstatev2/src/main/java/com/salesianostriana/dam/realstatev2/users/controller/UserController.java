@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.realstatev2.users.controller;
 
+import com.salesianostriana.dam.realstatev2.users.dto.CreateGestorDto;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateUserDto;
 import com.salesianostriana.dam.realstatev2.users.dto.GetUserDto;
 import com.salesianostriana.dam.realstatev2.users.dto.UserDtoConverter;
@@ -30,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping("/auth/register/gestor")
-    public ResponseEntity<GetUserDto> nuevoGestor(@RequestBody CreateUserDto newGestor) {
+    public ResponseEntity<GetUserDto> nuevoGestor(@RequestBody CreateGestorDto newGestor) {
         User saved = userEntityService.saveGestor(newGestor);
 
         if (saved == null)
