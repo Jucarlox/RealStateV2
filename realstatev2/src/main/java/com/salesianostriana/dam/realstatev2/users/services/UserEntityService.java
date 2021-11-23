@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.realstatev2.users.services;
 
 import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
+import com.salesianostriana.dam.realstatev2.services.InmobiliariaService;
 import com.salesianostriana.dam.realstatev2.services.base.BaseService;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateGestorDto;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateUserDto;
@@ -19,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -26,6 +28,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserEntityService extends BaseService<User, UUID, UserEntityRepository> implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
+    private final InmobiliariaService inmobiliariaService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -35,6 +38,10 @@ public class UserEntityService extends BaseService<User, UUID, UserEntityReposit
 
     public List<User> loadUserByRol(UserRole roles) throws UsernameNotFoundException {
         return this.repositorio.findByRoles(roles);
+    }
+
+    public Optional<User> loadUserById(UUID id) throws UsernameNotFoundException {
+        return this.repositorio.findById(id);
     }
 
     public User savePropietario(CreateUserDto newPropietario) {
@@ -59,7 +66,7 @@ public class UserEntityService extends BaseService<User, UUID, UserEntityReposit
         }
     }
 
-    public User saveGestor(CreateGestorDto newGestor, Inmobiliaria i) {
+    public User saveGestor(CreateGestorDto newGestor) {
 
         if (newGestor.getPassword().contentEquals(newGestor.getPassword2())) {
             User user = User.builder()
@@ -71,8 +78,11 @@ public class UserEntityService extends BaseService<User, UUID, UserEntityReposit
                     .nombre(newGestor.getNombre())
                     .email(newGestor.getEmail())
                     .roles(UserRole.GESTOR)
-                    .inmobiliaria(i)
+                    .inmobiliaria(null)
                     .build();
+            Optional<Inmobiliaria> inmobiliaria= inmobiliariaService.findById(newGestor.getInmobiliariaId());
+            if(inmobiliaria.isPresent())
+                user.addInmobiliaria(inmobiliaria.get());
             try{
                 return save(user);
             }catch (DataIntegrityViolationException ex){

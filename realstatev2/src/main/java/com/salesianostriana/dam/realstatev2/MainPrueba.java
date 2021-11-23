@@ -15,15 +15,7 @@ public class MainPrueba {
     private final UserEntityService userEntityService;
     @PostConstruct
     public void test() {
-        /*User user= User.builder()
-                .nombre("Jaime")
-                .apellidos("Jimenez")
-                .telefono("438070987")
-                .direccion("C/ Mi calle")
-                .avatar("png")
-                .email("jaime@gmail.com")
-                .password("1234")
-                .build();*/
+
         CreateUserDto user= CreateUserDto.builder()
                 .nombre("Jaime")
                 .apellidos("Jimenez")
@@ -32,7 +24,13 @@ public class MainPrueba {
                 .avatar("png")
                 .email("jaime@gmail.com")
                 .password("1234")
+                .password2("1234")
                 .build();
+
         userEntityService.saveAdmin(user);
+
+
+
+        //userEntityService.saveAdmin(user);
     }
 }

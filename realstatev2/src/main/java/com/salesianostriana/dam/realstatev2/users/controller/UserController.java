@@ -37,13 +37,13 @@ public class UserController {
 
     @PostMapping("/auth/register/gestor")
     public ResponseEntity<GetUserDto> nuevoGestor(@RequestBody CreateGestorDto newGestor) {
-        User saved;
-        Optional<Inmobiliaria> inmobiliaria= inmobiliariaService.findById(newGestor.getInmobiliariaId());
 
 
-        saved= userEntityService.saveGestor(newGestor, inmobiliaria.get());
-        saved.addInmobiliaria(inmobiliaria.get());
-        if (saved == null)
+
+
+        User saved= userEntityService.saveGestor(newGestor);
+
+        if (saved == null || saved.getInmobiliaria()== null)
             return ResponseEntity.badRequest().build();
         else
             return ResponseEntity.ok(userDtoConverter.convertUserEntityToGetUserDto(saved));

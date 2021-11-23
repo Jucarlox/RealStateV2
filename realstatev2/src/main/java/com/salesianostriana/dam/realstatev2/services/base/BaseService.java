@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public abstract class BaseService<T, ID, R extends JpaRepository<T,ID>> {
 
