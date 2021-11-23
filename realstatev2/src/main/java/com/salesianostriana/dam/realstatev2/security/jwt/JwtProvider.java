@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.UUID;
 
 @Log
 @Service
@@ -51,7 +52,7 @@ public class JwtProvider {
 
         return Jwts.builder()
                 .setHeaderParam("typ", TOKEN_TYPE)
-                .setSubject(Long.toString(user.getId()))
+                .setSubject(user.getId().toString())
                 .setIssuedAt(tokenExpirationDate)
                 .claim("email", user.getEmail())
                 .claim("role", user.getRoles())
@@ -61,9 +62,9 @@ public class JwtProvider {
 
     }
 
-    public Long getUserIdFromJwt(String token) {
+    public UUID getUserIdFromJwt(String token) {
 
-        return Long.valueOf(parser.parseClaimsJws(token).getBody().getSubject());
+        return UUID.fromString(parser.parseClaimsJws(token).getBody().getSubject());
 
 
     }

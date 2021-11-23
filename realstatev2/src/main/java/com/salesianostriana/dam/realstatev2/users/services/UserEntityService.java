@@ -17,12 +17,13 @@ import org.springframework.stereotype.Service;
 import com.salesianostriana.dam.realstatev2.users.repository.UserEntityRepository;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service("userDetailsService")
 @RequiredArgsConstructor
-public class UserEntityService extends BaseService<User, Long, UserEntityRepository> implements UserDetailsService {
+public class UserEntityService extends BaseService<User, UUID, UserEntityRepository> implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
