@@ -1,5 +1,7 @@
 package com.salesianostriana.dam.realstatev2;
 
+import com.salesianostriana.dam.realstatev2.model.Vivienda;
+import com.salesianostriana.dam.realstatev2.services.ViviendaService;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateUserDto;
 import com.salesianostriana.dam.realstatev2.users.model.User;
 import com.salesianostriana.dam.realstatev2.users.services.UserEntityService;
@@ -13,6 +15,7 @@ import javax.annotation.PostConstruct;
 public class MainPrueba {
 
     private final UserEntityService userEntityService;
+    private final ViviendaService viviendaService;
     @PostConstruct
     public void test() {
 
@@ -28,6 +31,35 @@ public class MainPrueba {
                 .build();
 
         userEntityService.saveAdmin(user);
+
+        CreateUserDto user2= CreateUserDto.builder()
+                .nombre("Juanka")
+                .apellidos("Jimenez")
+                .telefono("438070987")
+                .direccion("C/ Mi calle")
+                .avatar("png")
+                .email("juanka@gmail.com")
+                .password("1234")
+                .password2("1234")
+                .build();
+
+
+
+        Vivienda vivienda1 = Vivienda.builder()
+                .titulo("Casa 2")
+                .descripcion("Descripcion")
+                .precio(2354567.78)
+                .build();
+
+        vivienda1.addPropietario(userEntityService.savePropietario(user2));
+
+        viviendaService.save(vivienda1);
+
+
+
+
+
+
 
 
 
