@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import com.salesianostriana.dam.realstatev2.users.repository.UserEntityRepository;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,6 +31,11 @@ public class UserEntityService extends BaseService<User, UUID, UserEntityReposit
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return this.repositorio.findFirstByEmail(email).orElseThrow(()-> new UsernameNotFoundException("El "+ email + " no encontrado"));
+    }
+
+
+    public List<User> loadUserByRol(UserRole roles) throws UsernameNotFoundException {
+        return this.repositorio.findByRoles(roles);
     }
 
     public User savePropietario(CreateUserDto newPropietario) {
