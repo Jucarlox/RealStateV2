@@ -1,5 +1,7 @@
 package com.salesianostriana.dam.realstatev2.users.controller;
 
+import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
+import com.salesianostriana.dam.realstatev2.services.InmobiliariaService;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateGestorDto;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateUserDto;
 import com.salesianostriana.dam.realstatev2.users.dto.GetUserDto;
@@ -12,12 +14,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserEntityService userEntityService;
     private final UserDtoConverter userDtoConverter;
+    private final InmobiliariaService inmobiliariaService;
 
     @PostMapping("/auth/register/user")
     public ResponseEntity<GetUserDto> nuevoUsuario(@RequestBody CreateUserDto newPropietario) {
@@ -32,8 +37,12 @@ public class UserController {
 
     @PostMapping("/auth/register/gestor")
     public ResponseEntity<GetUserDto> nuevoGestor(@RequestBody CreateGestorDto newGestor) {
-        User saved = userEntityService.saveGestor(newGestor);
+        User saved;
+        Optional<Inmobiliaria> inmobiliaria= inmobiliariaService.findById(newGestor.getInmobiliariaId());
 
+
+        saved= userEntityService.saveGestor(newGestor, inmobiliaria.get());
+        saved.addInmobiliaria(inmobiliaria.get());
         if (saved == null)
             return ResponseEntity.badRequest().build();
         else

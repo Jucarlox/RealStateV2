@@ -17,5 +17,5 @@ public class CreateGestorDto {
     private String direccion;
     private String telefono;
     private String avatar;
-    private Inmobiliaria inmobiliaria;
+    private Long inmobiliariaId;
 }

@@ -4,8 +4,9 @@ import com.salesianostriana.dam.realstatev2.users.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
-public interface UserEntityRepository extends JpaRepository<User, Long> {
+public interface UserEntityRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findFirstByEmail(String email);
 
