@@ -54,8 +54,10 @@ public class PropietarioController {
 
         String token = jwtAuthorizationFilter.getJwtFromRequest(request);
         UUID idPropietario= jwt.getUserIdFromJwt(token);
-        
-        if(propietario.isEmpty() && propietario.get().getRoles().equals(UserRole.ADMIN) || propietario.get().getId().equals(idPropietario)){
+
+        Optional<User> user = userEntityService.loadUserById(idPropietario);
+
+        if( !user.get().getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(idPropietario)){
             return ResponseEntity.notFound().build();
         }
         else{
