@@ -7,12 +7,14 @@ import com.salesianostriana.dam.realstatev2.security.jwt.JwtProvider;
 import com.salesianostriana.dam.realstatev2.users.model.User;
 import com.salesianostriana.dam.realstatev2.users.model.UserRole;
 import com.salesianostriana.dam.realstatev2.users.services.UserEntityService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -67,4 +69,30 @@ public class PropietarioController {
         return ResponseEntity.ok().body(propietarioDTOS);
         }
     }
+
+    @Operation(summary = "Borra un Propietario creado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha borrado el propietario",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class))})
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable UUID id) {
+
+        if(userEntityService.loadUserById(id).isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        else {
+            userEntityService.deleteById(id);
+
+            return ResponseEntity.noContent().build();
+        }
+
+
+    }
+
+
+
 }

@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 @Entity
 @NoArgsConstructor
@@ -58,5 +59,34 @@ public class Vivienda implements Serializable {
     @JsonIgnore
 
     private User propietario;
+
+
+
+
+    public void addPropietario(User u) {
+
+        if(u.getRoles().equals(UserRole.PROPIETARIO)) this.propietario = u;
+        if (u.getViviendas() == null)
+            u.setViviendas(new ArrayList<>());
+        u.getViviendas().add(this);
+    }
+
+    public void removePropietario(User u) {
+        if(u.getRoles().equals(UserRole.PROPIETARIO)){
+            u.getViviendas().remove(this);
+            this.propietario = null;
+        }
+
+    }
+
+    public void addInmobiliaria(Inmobiliaria i) {
+        this.inmobiliaria = i;
+        i.getViviendas().add(this);
+    }
+
+    public void removeInmobiliaria(Inmobiliaria i) {
+        i.getViviendas().remove(this);
+        this.inmobiliaria = null;
+    }
 
 }

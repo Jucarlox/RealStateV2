@@ -58,7 +58,7 @@ public class User implements UserDetails {
     private Inmobiliaria inmobiliaria;
 
     @Builder.Default
-    @OneToMany( fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "propietario",fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
     @JsonIgnore
     private List<Vivienda> viviendas=new ArrayList<>();
 
