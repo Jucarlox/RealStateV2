@@ -29,10 +29,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        // 1. Obtener el token de la petición (request)
+
         String token = getJwtFromRequest(request);
 
-        // 2. Validar token
+
         try {
             if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
 
@@ -45,7 +45,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
                                     user,
-                                    user.getRole(),
+                                    user.getRoles(),
                                     user.getAuthorities()
                             );
                     authentication.setDetails(new WebAuthenticationDetails(request));
@@ -68,7 +68,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
-        // Authorization: Bearer eltoken.qiemas.megusta
+
         String bearerToken = request.getHeader(JwtProvider.TOKEN_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(JwtProvider.TOKEN_PREFIX)) {
             return bearerToken.substring(JwtProvider.TOKEN_PREFIX.length());

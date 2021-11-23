@@ -14,9 +14,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
-@Table(name="USER")
 @EntityListeners(AuditingEntityListener.class)
 @Data
 @NoArgsConstructor
@@ -36,8 +37,9 @@ public class User implements UserDetails {
     private String apellidos;
     private String direccion;
     private String telefono;
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private Set<UserRole> roles;
     private String avatar;
 
     @ManyToOne
@@ -47,7 +49,10 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        return roles
+                .stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                .collect(Collectors.toList());
     }
 
 
@@ -76,5 +81,16 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+
+    public void addInmobiliaria(Inmobiliaria i) {
+        this.inmobiliaria = i;
+        i.getGestores().add(this);
+    }
+
+    public void removeInmobiliaria(Inmobiliaria i) {
+        i.getGestores().remove(this);
+        this.inmobiliaria = null;
     }
 }

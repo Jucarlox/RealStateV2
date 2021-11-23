@@ -13,7 +13,7 @@ public class GetUserDto {
     private String avatar;
     private String nombre;
     private String email;
-    private UserRole role;
+    private String role;
 
 
 }

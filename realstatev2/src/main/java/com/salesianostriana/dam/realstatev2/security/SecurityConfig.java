@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -52,12 +53,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 //.antMatchers(HttpMethod.POST, "/vivienda/**").hasRole("PROPIETARIO")
                 .antMatchers(HttpMethod.POST, "/auth/register/user").anonymous()
-                .antMatchers(HttpMethod.POST,"/h2-console/**").permitAll()
-                .antMatchers(HttpMethod.POST,"/auth/register/gestor").hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.POST,"/auth/register/admin").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/auth/login").anonymous()
+                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/auth/register/gestor").anonymous()
+                .antMatchers(HttpMethod.POST,"/auth/register/admin").anonymous()
                 .anyRequest().authenticated();
+                //.hasAnyRole("ADMIN")
+                //.hasAnyRole("ADMIN")
 
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+
+        http.headers().frameOptions().disable();
 
     }
 

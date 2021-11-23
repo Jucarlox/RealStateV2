@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.realstatev2.users.services;
 
+import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
 import com.salesianostriana.dam.realstatev2.services.base.BaseService;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateGestorDto;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateUserDto;
@@ -15,6 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.salesianostriana.dam.realstatev2.users.repository.UserEntityRepository;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service("userDetailsService")
 @RequiredArgsConstructor
@@ -36,7 +40,7 @@ public class UserEntityService extends BaseService<User, Long, UserEntityReposit
                     .telefono(newPropietario.getTelefono())
                     .nombre(newPropietario.getNombre())
                     .email(newPropietario.getEmail())
-                    .role(UserRole.PROPIETARIO)
+                    .roles(Stream.of(UserRole.PROPIETARIO).collect(Collectors.toSet()))
                     .build();
             try{
                 return save(user);
@@ -48,7 +52,8 @@ public class UserEntityService extends BaseService<User, Long, UserEntityReposit
         }
     }
 
-    public User saveGestor(CreateGestorDto newGestor) {
+    public User saveGestor(CreateGestorDto newGestor, Inmobiliaria i) {
+
         if (newGestor.getPassword().contentEquals(newGestor.getPassword2())) {
             User user = User.builder()
                     .password(passwordEncoder.encode(newGestor.getPassword()))
@@ -58,8 +63,8 @@ public class UserEntityService extends BaseService<User, Long, UserEntityReposit
                     .telefono(newGestor.getTelefono())
                     .nombre(newGestor.getNombre())
                     .email(newGestor.getEmail())
-                    .role(UserRole.GESTOR)
-                    .inmobiliaria(newGestor.getInmobiliaria())
+                    .roles(Stream.of(UserRole.GESTOR).collect(Collectors.toSet()))
+                    .inmobiliaria(i)
                     .build();
             try{
                 return save(user);
@@ -81,7 +86,7 @@ public class UserEntityService extends BaseService<User, Long, UserEntityReposit
                     .telefono(newAdmin.getTelefono())
                     .nombre(newAdmin.getNombre())
                     .email(newAdmin.getEmail())
-                    .role(UserRole.ADMIN)
+                    .roles(Stream.of(UserRole.ADMIN).collect(Collectors.toSet()))
                     .build();
             try{
                 return save(user);

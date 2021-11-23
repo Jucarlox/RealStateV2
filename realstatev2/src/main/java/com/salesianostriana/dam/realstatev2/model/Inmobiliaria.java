@@ -25,7 +25,7 @@ import java.util.List;
 @SuperBuilder
 public class Inmobiliaria implements Serializable {
         public static final String INMOBILIARIA_CON_VIVIENDA= "grafo-inmobiliaria-con-vivienda";
-        public static final String INMOBILIARIA_CON_USER= "grafo-inmobiliaria-con-user";
+        //public static final String INMOBILIARIA_CON_USER= "grafo-inmobiliaria-con-user";
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         private Long id;
