@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.realstatev2.services.base;
 
+import com.salesianostriana.dam.realstatev2.users.model.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -18,6 +19,10 @@ public abstract class BaseService<T, ID, R extends JpaRepository<T,ID>> {
     public Optional<T> findById(ID id) {
         return repositorio.findById(id);
     }
+
+    //public Optional<T> findByRoles(UserRole role) {
+        //return repositorio.findBy();
+    //}
 
     public T save(T t) {
         return repositorio.save(t);
