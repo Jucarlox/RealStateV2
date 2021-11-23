@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.realstatev2;
 
+import com.salesianostriana.dam.realstatev2.model.Tipo;
 import com.salesianostriana.dam.realstatev2.model.Vivienda;
 import com.salesianostriana.dam.realstatev2.services.ViviendaService;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateUserDto;
@@ -49,6 +50,7 @@ public class MainPrueba {
                 .titulo("Casa 2")
                 .descripcion("Descripcion")
                 .precio(2354567.78)
+                .tipoVivienda(Tipo.VENTA)
                 .build();
 
         vivienda1.addPropietario(userEntityService.savePropietario(user2));

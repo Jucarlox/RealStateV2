@@ -1,5 +1,6 @@
 package com.salesianostriana.dam.realstatev2.controller.vivienda;
 
+import com.salesianostriana.dam.realstatev2.dto.vivienda.GetViviendaDTO;
 import com.salesianostriana.dam.realstatev2.dto.vivienda.GetViviendaSummarizedDTO;
 import com.salesianostriana.dam.realstatev2.dto.vivienda.ViviendaDTOConverter;
 import com.salesianostriana.dam.realstatev2.model.Vivienda;
@@ -100,6 +101,31 @@ public class ViviendaController {
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok().body(lista);
+        }
+    }
+
+
+    @Operation(summary = "Obtiene una vivienda creada")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se ha encontrado la vivienda",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Vivienda.class))}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado la vivienda",
+                    content = @Content),
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<GetViviendaDTO> findOne(@PathVariable Long id) {
+
+        Optional<Vivienda> vivienda = viviendaService.findById(id);
+
+        if(vivienda.isEmpty()){
+            return ResponseEntity.notFound().build();
+
+        }else {
+            GetViviendaDTO viviendaDTO = viviendaDTOConverter.viviendaToGetViviendaDTO(vivienda.get());
+            return ResponseEntity.ok().body(viviendaDTO);
         }
     }
 
