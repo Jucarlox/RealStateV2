@@ -1,6 +1,8 @@
 package com.salesianostriana.dam.realstatev2.users.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
+import com.salesianostriana.dam.realstatev2.model.Vivienda;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,10 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -49,22 +48,24 @@ public class User implements UserDetails {
     private String apellidos;
     private String direccion;
     private String telefono;
-    @ElementCollection(fetch = FetchType.EAGER)
+
     @Enumerated(EnumType.STRING)
-    private Set<UserRole> roles;
+    private UserRole roles;
     private String avatar;
 
     @ManyToOne
     @JoinColumn(name = "inmobiliaria_id", foreignKey = @ForeignKey(name = "FK_USER_INMOBILIARIA"), nullable = true)
     private Inmobiliaria inmobiliaria;
 
+    @Builder.Default
+    @OneToMany( fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
+    @JsonIgnore
+    private List<Vivienda> viviendas=new ArrayList<>();
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles
-                .stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
-                .collect(Collectors.toList());
+        return List.of(new SimpleGrantedAuthority("ROLE_" + roles.name()));
     }
 
 

@@ -18,10 +18,9 @@ import com.salesianostriana.dam.realstatev2.users.repository.UserEntityRepositor
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Set;
+
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 @Service("userDetailsService")
 @RequiredArgsConstructor
@@ -48,7 +47,7 @@ public class UserEntityService extends BaseService<User, UUID, UserEntityReposit
                     .telefono(newPropietario.getTelefono())
                     .nombre(newPropietario.getNombre())
                     .email(newPropietario.getEmail())
-                    .roles(Stream.of(UserRole.PROPIETARIO).collect(Collectors.toSet()))
+                    .roles(UserRole.PROPIETARIO)
                     .build();
             try{
                 return save(user);
@@ -71,7 +70,7 @@ public class UserEntityService extends BaseService<User, UUID, UserEntityReposit
                     .telefono(newGestor.getTelefono())
                     .nombre(newGestor.getNombre())
                     .email(newGestor.getEmail())
-                    .roles(Stream.of(UserRole.GESTOR).collect(Collectors.toSet()))
+                    .roles(UserRole.GESTOR)
                     .inmobiliaria(i)
                     .build();
             try{
@@ -94,7 +93,7 @@ public class UserEntityService extends BaseService<User, UUID, UserEntityReposit
                     .telefono(newAdmin.getTelefono())
                     .nombre(newAdmin.getNombre())
                     .email(newAdmin.getEmail())
-                    .roles(Stream.of(UserRole.ADMIN).collect(Collectors.toSet()))
+                    .roles(UserRole.ADMIN)
                     .build();
             try{
                 return save(user);

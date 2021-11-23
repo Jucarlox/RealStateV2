@@ -34,4 +34,18 @@ public class PropietarioController {
             return ResponseEntity.ok().body(lista);
         }
     }
+
+    /*@GetMapping("/{id}")
+    public ResponseEntity<List<GetPropietarioViviendaDto>> findOne(@PathVariable Long id){
+        Optional<Propietario> prop = propietarioService.findById(id);
+        if(propietarioService.findById(id).isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        else{
+            List<GetPropietarioViviendaDto> propietarioDTOS= prop.stream()
+                    .map(propietarioDTOConverter::propietarioToGetPropietarioViviendaDto)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok().body(propietarioDTOS);
+        }
+    }*/
 }
