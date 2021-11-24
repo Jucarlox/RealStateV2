@@ -98,4 +98,23 @@ public class InmobiliariaController {
             return ResponseEntity.noContent().build();
         }
     }
+
+    @GetMapping("/{id}/gestor")
+    public ResponseEntity<Inmobiliaria> getGestoresOfInmobiliaria(@PathVariable Long id, @AuthenticationPrincipal User userLogged){
+        Inmobiliaria inmobiliaria = inmobiliariaService.getById(id);
+
+        Boolean comprobacion = false;
+        for (User gestor : inmobiliaria.getGestores()) {
+            if (gestor.getId().equals(userLogged.getId())) {
+                comprobacion = true;
+            }
+        }
+
+        if(!userLogged.getRoles().equals(UserRole.ADMIN) && !comprobacion) {
+            return ResponseEntity.status(403).build();
+        }else {
+            return ResponseEntity.ok().body(inmobiliaria);
+        }
+
+    }
 }
