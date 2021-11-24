@@ -12,6 +12,7 @@ public class UserDtoConverter {
                 .nombre(user.getNombre())
                 .email(user.getEmail())
                 .role(user.getRoles().name())
+                .id(user.getId())
                 .build();
 
 
