@@ -178,4 +178,34 @@ public class ViviendaController {
     }
 
 
+
+    @Operation(summary = "Borra una vivienda por id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha borrado la vivienda",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Vivienda.class))})
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Long id, HttpServletRequest request) {
+
+        String token = jwtAuthorizationFilter.getJwtFromRequest(request);
+        UUID idPropietario= jwt.getUserIdFromJwt(token);
+
+        Optional<User> user = userEntityService.loadUserById(idPropietario);
+
+        if(!user.get().getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)){
+            return ResponseEntity.notFound().build();
+        }
+
+        else {
+            viviendaService.deleteById(id);
+
+            return ResponseEntity.noContent().build();
+        }
+
+
+    }
+
+
 }

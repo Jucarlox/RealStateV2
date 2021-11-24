@@ -2,6 +2,7 @@ package com.salesianostriana.dam.realstatev2.users.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
+import com.salesianostriana.dam.realstatev2.model.Interesa;
 import com.salesianostriana.dam.realstatev2.model.Vivienda;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -61,6 +62,15 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "propietario",fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
     @JsonIgnore
     private List<Vivienda> viviendas=new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "interesado")
+    private List<Interesa> interesas = new ArrayList<>();
+
+    @PreRemove
+    public void preRemove(){
+        interesas.forEach(v -> v.setInteresado(null));
+    }
 
 
     @Override
