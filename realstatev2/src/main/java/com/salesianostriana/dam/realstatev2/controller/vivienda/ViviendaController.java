@@ -8,6 +8,7 @@ import com.salesianostriana.dam.realstatev2.security.jwt.JwtAuthorizationFilter;
 import com.salesianostriana.dam.realstatev2.security.jwt.JwtProvider;
 import com.salesianostriana.dam.realstatev2.services.ViviendaService;
 import com.salesianostriana.dam.realstatev2.users.model.User;
+import com.salesianostriana.dam.realstatev2.users.model.UserRole;
 import com.salesianostriana.dam.realstatev2.users.services.UserEntityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -126,6 +127,53 @@ public class ViviendaController {
         }else {
             GetViviendaDTO viviendaDTO = viviendaDTOConverter.viviendaToGetViviendaDTO(vivienda.get());
             return ResponseEntity.ok().body(viviendaDTO);
+        }
+    }
+
+
+
+
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Vivienda> edit (@RequestBody Vivienda v, @PathVariable Long id, HttpServletRequest request) {
+
+        String token = jwtAuthorizationFilter.getJwtFromRequest(request);
+        UUID idPropietario= jwt.getUserIdFromJwt(token);
+
+        Optional<User> user = userEntityService.loadUserById(idPropietario);
+
+
+
+
+        if(!user.get().getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)){
+            return ResponseEntity.notFound().build();
+
+        }else {
+            return ResponseEntity.of(
+
+                    viviendaService.findById(id).map(m -> {
+                        m.setTitulo(v.getTitulo());
+                        m.setDescripcion(v.getDescripcion());
+                        m.setAvatar(v.getAvatar());
+                        m.setCodigoPostal(v.getCodigoPostal());
+                        m.setLatlng(v.getLatlng());
+                        m.setMetrosCuadrados(v.getMetrosCuadrados());
+                        m.setNumBanios(v.getNumBanios());
+                        m.setNumHabitaciones(v.getNumHabitaciones());
+                        m.setPoblacion(v.getPoblacion());
+                        m.setPrecio(v.getPrecio());
+                        m.setProvincia(v.getProvincia());
+                        m.setDireccion(v.getDireccion());
+                        m.setTipoVivienda(v.getTipoVivienda());
+                        m.setTienePiscina(v.isTienePiscina());
+                        m.setTieneAscensor(v.isTieneAscensor());
+                        m.setTieneGaraje(v.isTieneGaraje());
+                        viviendaService.save(m);
+
+                        return m;
+                    })
+            );
         }
     }
 
