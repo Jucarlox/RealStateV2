@@ -22,6 +22,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -80,5 +81,21 @@ public class InmobiliariaController {
 
         }
 
+    }
+
+    @DeleteMapping("/gestor/{id}")
+    public ResponseEntity delete(@PathVariable UUID id, @AuthenticationPrincipal User userLogged){
+
+        Optional<User> gestor = userEntityService.loadUserById(id);
+
+
+        if (!userLogged.getRoles().equals(UserRole.ADMIN) && gestor.get().getId().equals(userLogged.getId())) {
+            return ResponseEntity.status(403).build();
+        }else {
+            Inmobiliaria inmobiliaria = gestor.get().getInmobiliaria();
+            gestor.get().removeInmobiliaria(inmobiliaria);
+            userEntityService.save(gestor.get());
+            return ResponseEntity.noContent().build();
+        }
     }
 }
