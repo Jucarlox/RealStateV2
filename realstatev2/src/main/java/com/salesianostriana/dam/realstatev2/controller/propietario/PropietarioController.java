@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,16 +51,13 @@ public class PropietarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<GetPropietarioViviendaDto>> findOne(@PathVariable UUID id, HttpServletRequest request){
+    public ResponseEntity<List<GetPropietarioViviendaDto>> findOne(@PathVariable UUID id, @AuthenticationPrincipal User userLogged){
         Optional<User> propietario = userEntityService.loadUserById(id);
 
 
-        String token = jwtAuthorizationFilter.getJwtFromRequest(request);
-        UUID idPropietario= jwt.getUserIdFromJwt(token);
 
-        Optional<User> user = userEntityService.loadUserById(idPropietario);
 
-        if(!userEntityService.loadUserById(id).isEmpty() && !user.get().getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(idPropietario)){
+        if(!userEntityService.loadUserById(id).isEmpty() && !userLogged.getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(userLogged.getId())){
             return ResponseEntity.notFound().build();
         }
         else{
@@ -78,16 +76,13 @@ public class PropietarioController {
                             schema = @Schema(implementation = User.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable UUID id, HttpServletRequest request) {
+    public ResponseEntity delete(@PathVariable UUID id, @AuthenticationPrincipal User userLogged) {
 
         Optional<User> propietario = userEntityService.loadUserById(id);
 
-        String token = jwtAuthorizationFilter.getJwtFromRequest(request);
-        UUID idPropietario= jwt.getUserIdFromJwt(token);
 
-        Optional<User> user = userEntityService.loadUserById(idPropietario);
 
-        if(!userEntityService.loadUserById(id).isEmpty() && !user.get().getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(idPropietario)){
+        if(!userEntityService.loadUserById(id).isEmpty() && !userLogged.getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(userLogged.getId())){
             return ResponseEntity.status(403).build();
         }
 

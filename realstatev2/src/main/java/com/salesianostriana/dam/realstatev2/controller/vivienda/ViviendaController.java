@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,19 +58,17 @@ public class ViviendaController {
                     content = @Content),
     })
     @PostMapping("/")
-    public ResponseEntity<Vivienda> createVivienda(@RequestBody Vivienda vivienda, HttpServletRequest request) {
+    public ResponseEntity<Vivienda> createVivienda(@RequestBody Vivienda vivienda, @AuthenticationPrincipal User userLogged) {
 
-        String token = jwtAuthorizationFilter.getJwtFromRequest(request);
-        UUID idPropietario = jwt.getUserIdFromJwt(token);
-        Optional<User> propietario = userEntityService.loadUserById(idPropietario);
+
 
         if (vivienda.getTitulo().isEmpty()) {
             return ResponseEntity.badRequest().build();
         } else {
-            if (propietario.get().getId() != null)
-                propietario = userEntityService.loadUserById(propietario.get().getId());
+            if (userLogged.getId() != null)
 
-            vivienda.addPropietario(propietario.get());
+
+            vivienda.addPropietario(userLogged);
             viviendaService.save(vivienda);
 
             return ResponseEntity
@@ -132,15 +131,12 @@ public class ViviendaController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Vivienda> edit(@RequestBody Vivienda v, @PathVariable Long id, HttpServletRequest request) {
-
-        String token = jwtAuthorizationFilter.getJwtFromRequest(request);
-        UUID idPropietario = jwt.getUserIdFromJwt(token);
-
-        Optional<User> user = userEntityService.loadUserById(idPropietario);
+    public ResponseEntity<Vivienda> edit(@RequestBody Vivienda v, @PathVariable Long id, @AuthenticationPrincipal User userLogged) {
 
 
-        if (!user.get().getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)) {
+
+
+        if (!userLogged.getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(userLogged.getId())) {
             return ResponseEntity.notFound().build();
 
         } else {
@@ -180,14 +176,11 @@ public class ViviendaController {
                             schema = @Schema(implementation = Vivienda.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity delete(@PathVariable Long id, @AuthenticationPrincipal User userLogged) {
 
-        String token = jwtAuthorizationFilter.getJwtFromRequest(request);
-        UUID idPropietario = jwt.getUserIdFromJwt(token);
 
-        Optional<User> user = userEntityService.loadUserById(idPropietario);
 
-        if (!user.get().getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)) {
+        if (!userLogged.getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(userLogged.getId())) {
             return ResponseEntity.notFound().build();
         } else {
             viviendaService.deleteById(id);
@@ -200,22 +193,19 @@ public class ViviendaController {
 
 
     @PostMapping("{id}/inmobiliaria/{id2}")
-    public ResponseEntity<GetViviendaDTO> createViviendaWithRealEstate(@PathVariable Long id, @PathVariable Long id2, HttpServletRequest request) {
+    public ResponseEntity<GetViviendaDTO> createViviendaWithRealEstate(@PathVariable Long id, @PathVariable Long id2, @AuthenticationPrincipal User userLogged) {
 
-        String token = jwtAuthorizationFilter.getJwtFromRequest(request);
-        UUID idPropietario = jwt.getUserIdFromJwt(token);
 
-        Optional<User> user = userEntityService.loadUserById(idPropietario);
 
-        if (!user.get().getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)) {
+        if (!userLogged.getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(userLogged.getId())) {
             return ResponseEntity.notFound().build();
         } else {
 
             Vivienda vivienda = viviendaService.getById(id);
             vivienda.addInmobiliaria(inmobiliariaService.getById(id2));
 
-            user.get().addInmobiliaria(inmobiliariaService.getById(id2));
-            userEntityService.save(user.get());
+            userLogged.addInmobiliaria(inmobiliariaService.getById(id2));
+            userEntityService.save(userLogged);
 
             viviendaService.save(vivienda);
 
@@ -236,25 +226,18 @@ public class ViviendaController {
     })
 
     @DeleteMapping("/{id}/inmobiliaria")
-    public ResponseEntity deleteInmobiliariaFromVivienda(@PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity deleteInmobiliariaFromVivienda(@PathVariable Long id, @AuthenticationPrincipal User userLogged) {
 
-        String token = jwtAuthorizationFilter.getJwtFromRequest(request);
-        UUID idPropietario = jwt.getUserIdFromJwt(token);
 
-        Optional<User> user = userEntityService.loadUserById(idPropietario);
+        Boolean comprobacion=false;
+        for (User gestor : viviendaService.findById(id).get().getInmobiliaria().getGestores()) {
+            if (gestor.getId().equals(userLogged.getId())) {
 
-        //Boolean comprobacion=true;
-
-        /*for (User gestor : viviendaService.findById(id).get().getInmobiliaria().getGestores()) {
-            if (!gestor.getId().equals(idPropietario)) {
-
-                comprobacion=false;
+                comprobacion=true;
             }
-        }*/
+        }
 
-
-
-        if (!viviendaService.findById(id).isEmpty() && !user.get().getRoles().equals(UserRole.ADMIN)/* &&  !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)&& !inmobiliariaService.findGestorOfViviendaId(viviendaService.findById(id).get().getInmobiliaria())*/) {
+        if (!viviendaService.findById(id).isEmpty() && !userLogged.getRoles().equals(UserRole.ADMIN) &&  !viviendaService.findById(id).get().getPropietario().getId().equals(userLogged.getId()) && !comprobacion) {
 
 
             return ResponseEntity.notFound().build();
