@@ -227,30 +227,19 @@ public class ViviendaController {
 
     @DeleteMapping("/{id}/inmobiliaria")
     public ResponseEntity deleteInmobiliariaFromVivienda(@PathVariable Long id, @AuthenticationPrincipal User userLogged) {
-
-
         Boolean comprobacion=false;
         for (User gestor : viviendaService.findById(id).get().getInmobiliaria().getGestores()) {
             if (gestor.getId().equals(userLogged.getId())) {
-
                 comprobacion=true;
             }
         }
-
         if (!viviendaService.findById(id).isEmpty() && !userLogged.getRoles().equals(UserRole.ADMIN) &&  !viviendaService.findById(id).get().getPropietario().getId().equals(userLogged.getId()) && !comprobacion) {
-
-
             return ResponseEntity.notFound().build();
-
         } else {
-
             Inmobiliaria inmobiliaria = viviendaService.findById(id).get().getInmobiliaria();
             viviendaService.findById(id).get().removeInmobiliaria(inmobiliaria);
             viviendaService.save(viviendaService.findById(id).get());
-
             return ResponseEntity.noContent().build();
-
-
         }
     }
 }
