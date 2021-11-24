@@ -44,4 +44,8 @@ public class Inmobiliaria implements Serializable {
 
         private List<User> gestores=new ArrayList<>();
 
+
+
+
+
 }

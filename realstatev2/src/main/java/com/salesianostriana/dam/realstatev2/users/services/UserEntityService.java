@@ -114,4 +114,33 @@ public class UserEntityService extends BaseService<User, UUID, UserEntityReposit
             return null;
         }
     }
+
+
+
+    public User saveGestorWithoutId(CreateUserDto newGestor, Inmobiliaria inmobiliaria) {
+
+        if (newGestor.getPassword().contentEquals(newGestor.getPassword2())) {
+            User user = User.builder()
+                    .password(passwordEncoder.encode(newGestor.getPassword()))
+                    .avatar(newGestor.getAvatar())
+                    .apellidos(newGestor.getApellidos())
+                    .direccion(newGestor.getDireccion())
+                    .telefono(newGestor.getTelefono())
+                    .nombre(newGestor.getNombre())
+                    .email(newGestor.getEmail())
+                    .roles(UserRole.GESTOR)
+                    .inmobiliaria(null)
+                    .build();
+
+
+                user.addInmobiliaria(inmobiliaria);
+            try{
+                return save(user);
+            }catch (DataIntegrityViolationException ex){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre de ese usuario ya existe");
+            }
+        } else {
+            return null;
+        }
+    }
 }
