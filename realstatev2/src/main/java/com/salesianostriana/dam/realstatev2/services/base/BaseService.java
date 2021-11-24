@@ -21,6 +21,8 @@ public abstract class BaseService<T, ID, R extends JpaRepository<T,ID>> {
         return repositorio.findById(id);
     }
 
+    public T getById(ID id) { return repositorio.getById(id); }
+
     //public Optional<T> findByRoles(UserRole role) {
         //return repositorio.findBy();
     //}

@@ -8,3 +8,11 @@
 
 
 insert into INMOBILIARIA (id, nombre, email, telefono) values (NEXTVAL('hibernate_sequence'), 'Mosciski-Volkman', 'cdomenici3@feedburner.com', '222-440-9350');
+insert into INMOBILIARIA (id, nombre, email, telefono) values (NEXTVAL('hibernate_sequence'), 'JSDASHDUI', 'cdomenici3@feedburner.com', '222-440-9350');
+
+
+
+asd@asaadfgfjsd.com
+
+asd@asASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDAaadfgfjsd.com
+

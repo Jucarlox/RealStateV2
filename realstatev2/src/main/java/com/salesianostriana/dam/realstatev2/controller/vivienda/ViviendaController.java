@@ -6,6 +6,7 @@ import com.salesianostriana.dam.realstatev2.dto.vivienda.ViviendaDTOConverter;
 import com.salesianostriana.dam.realstatev2.model.Vivienda;
 import com.salesianostriana.dam.realstatev2.security.jwt.JwtAuthorizationFilter;
 import com.salesianostriana.dam.realstatev2.security.jwt.JwtProvider;
+import com.salesianostriana.dam.realstatev2.services.InmobiliariaService;
 import com.salesianostriana.dam.realstatev2.services.ViviendaService;
 import com.salesianostriana.dam.realstatev2.users.model.User;
 import com.salesianostriana.dam.realstatev2.users.model.UserRole;
@@ -40,6 +41,7 @@ public class ViviendaController {
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
     private final UserEntityService userEntityService;
     private final ViviendaService viviendaService;
+    private final InmobiliariaService inmobiliariaService;
     private final ViviendaDTOConverter viviendaDTOConverter;
 
 
@@ -205,6 +207,30 @@ public class ViviendaController {
         }
 
 
+    }
+
+
+    @PostMapping("{id}/inmobiliaria/{id2}")    public ResponseEntity<GetViviendaDTO> createViviendaWithRealEstate (@PathVariable Long id, @PathVariable Long id2, HttpServletRequest request){
+
+        String token = jwtAuthorizationFilter.getJwtFromRequest(request);
+        UUID idPropietario= jwt.getUserIdFromJwt(token);
+
+        Optional<User> user = userEntityService.loadUserById(idPropietario);
+
+        if (!user.get().getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)) {
+            return  ResponseEntity.notFound().build();
+        } else {
+
+            Vivienda vivienda = viviendaService.getById(id);
+            vivienda.addInmobiliaria(inmobiliariaService.getById(id2));
+
+            user.get().addInmobiliaria(inmobiliariaService.getById(id2));
+            userEntityService.save(user.get());
+
+            viviendaService.save(vivienda);
+
+            GetViviendaDTO viviendaDTO = viviendaDTOConverter.viviendaToGetViviendaDTO(vivienda);
+            return ResponseEntity.status(HttpStatus.CREATED).body(viviendaDTO);        }
     }
 
 
