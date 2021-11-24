@@ -59,7 +59,7 @@ public class PropietarioController {
 
         Optional<User> user = userEntityService.loadUserById(idPropietario);
 
-        if( !user.get().getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(idPropietario)){
+        if(!userEntityService.loadUserById(id).isEmpty() && !user.get().getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(idPropietario)){
             return ResponseEntity.notFound().build();
         }
         else{
@@ -78,11 +78,19 @@ public class PropietarioController {
                             schema = @Schema(implementation = User.class))})
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable UUID id) {
+    public ResponseEntity delete(@PathVariable UUID id, HttpServletRequest request) {
 
-        if(userEntityService.loadUserById(id).isEmpty()){
-            return ResponseEntity.notFound().build();
+        Optional<User> propietario = userEntityService.loadUserById(id);
+
+        String token = jwtAuthorizationFilter.getJwtFromRequest(request);
+        UUID idPropietario= jwt.getUserIdFromJwt(token);
+
+        Optional<User> user = userEntityService.loadUserById(idPropietario);
+
+        if(!userEntityService.loadUserById(id).isEmpty() && !user.get().getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(idPropietario)){
+            return ResponseEntity.status(403).build();
         }
+
 
         else {
             userEntityService.deleteById(id);
@@ -92,6 +100,8 @@ public class PropietarioController {
 
 
     }
+
+
 
 
 

@@ -7,4 +7,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class InmobiliariaService extends BaseService<Inmobiliaria, Long, InmobiliariaRepository> {
+
+    public Boolean findGestorOfViviendaId ( Inmobiliaria inmobiliaria){
+
+        return repositorio.findByGestoresId(inmobiliaria);
+
+    }
 }

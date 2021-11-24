@@ -3,6 +3,7 @@ package com.salesianostriana.dam.realstatev2.controller.vivienda;
 import com.salesianostriana.dam.realstatev2.dto.vivienda.GetViviendaDTO;
 import com.salesianostriana.dam.realstatev2.dto.vivienda.GetViviendaSummarizedDTO;
 import com.salesianostriana.dam.realstatev2.dto.vivienda.ViviendaDTOConverter;
+import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
 import com.salesianostriana.dam.realstatev2.model.Vivienda;
 import com.salesianostriana.dam.realstatev2.security.jwt.JwtAuthorizationFilter;
 import com.salesianostriana.dam.realstatev2.security.jwt.JwtProvider;
@@ -45,35 +46,33 @@ public class ViviendaController {
     private final ViviendaDTOConverter viviendaDTOConverter;
 
 
-
     @Operation(summary = "Crea una nueva vivienda")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
                     description = "Se ha creado la vivienda",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = Vivienda.class))}),
             @ApiResponse(responseCode = "400",
                     description = "No se ha guardado la vivienda",
                     content = @Content),
     })
     @PostMapping("/")
-    public ResponseEntity<Vivienda> createVivienda (@RequestBody Vivienda vivienda, HttpServletRequest request){
+    public ResponseEntity<Vivienda> createVivienda(@RequestBody Vivienda vivienda, HttpServletRequest request) {
 
         String token = jwtAuthorizationFilter.getJwtFromRequest(request);
-        UUID idPropietario= jwt.getUserIdFromJwt(token);
+        UUID idPropietario = jwt.getUserIdFromJwt(token);
         Optional<User> propietario = userEntityService.loadUserById(idPropietario);
 
-        if(vivienda.getTitulo().isEmpty()){
+        if (vivienda.getTitulo().isEmpty()) {
             return ResponseEntity.badRequest().build();
-        }
-        else{
-            if(propietario.get().getId()!=null)
+        } else {
+            if (propietario.get().getId() != null)
                 propietario = userEntityService.loadUserById(propietario.get().getId());
 
             vivienda.addPropietario(propietario.get());
             viviendaService.save(vivienda);
 
-            return  ResponseEntity
+            return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(vivienda);
         }
@@ -83,22 +82,21 @@ public class ViviendaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se han encontrado las viviendas",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = Vivienda.class))}),
             @ApiResponse(responseCode = "404",
                     description = "No se han encontrado las viviendas",
                     content = @Content),
     })
     @GetMapping("/")
-    public ResponseEntity<List<GetViviendaSummarizedDTO>> findAll(/*@PageableDefault(page=0, size=9) Pageable pageable*/){
+    public ResponseEntity<List<GetViviendaSummarizedDTO>> findAll(/*@PageableDefault(page=0, size=9) Pageable pageable*/) {
 
         //Page<Vivienda> datos = viviendaService.findAll(pageable);
         List<Vivienda> datos = viviendaService.findAll();
 
-        if(datos.isEmpty()){
+        if (datos.isEmpty()) {
             return ResponseEntity.notFound().build();
-        }
-        else {
+        } else {
             List<GetViviendaSummarizedDTO> lista = datos.stream()
                     .map(viviendaDTOConverter::viviendaToGetViviendaSummarizedDTO)
                     .collect(Collectors.toList());
@@ -112,7 +110,7 @@ public class ViviendaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se ha encontrado la vivienda",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = Vivienda.class))}),
             @ApiResponse(responseCode = "404",
                     description = "No se ha encontrado la vivienda",
@@ -123,35 +121,29 @@ public class ViviendaController {
 
         Optional<Vivienda> vivienda = viviendaService.findById(id);
 
-        if(vivienda.isEmpty()){
+        if (vivienda.isEmpty()) {
             return ResponseEntity.notFound().build();
 
-        }else {
+        } else {
             GetViviendaDTO viviendaDTO = viviendaDTOConverter.viviendaToGetViviendaDTO(vivienda.get());
             return ResponseEntity.ok().body(viviendaDTO);
         }
     }
 
 
-
-
-
-
     @PutMapping("/{id}")
-    public ResponseEntity<Vivienda> edit (@RequestBody Vivienda v, @PathVariable Long id, HttpServletRequest request) {
+    public ResponseEntity<Vivienda> edit(@RequestBody Vivienda v, @PathVariable Long id, HttpServletRequest request) {
 
         String token = jwtAuthorizationFilter.getJwtFromRequest(request);
-        UUID idPropietario= jwt.getUserIdFromJwt(token);
+        UUID idPropietario = jwt.getUserIdFromJwt(token);
 
         Optional<User> user = userEntityService.loadUserById(idPropietario);
 
 
-
-
-        if(!user.get().getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)){
+        if (!user.get().getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)) {
             return ResponseEntity.notFound().build();
 
-        }else {
+        } else {
             return ResponseEntity.of(
 
                     viviendaService.findById(id).map(m -> {
@@ -180,27 +172,24 @@ public class ViviendaController {
     }
 
 
-
     @Operation(summary = "Borra una vivienda por id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
                     description = "Se ha borrado la vivienda",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = Vivienda.class))})
     })
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id, HttpServletRequest request) {
 
         String token = jwtAuthorizationFilter.getJwtFromRequest(request);
-        UUID idPropietario= jwt.getUserIdFromJwt(token);
+        UUID idPropietario = jwt.getUserIdFromJwt(token);
 
         Optional<User> user = userEntityService.loadUserById(idPropietario);
 
-        if(!user.get().getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)){
+        if (!user.get().getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)) {
             return ResponseEntity.notFound().build();
-        }
-
-        else {
+        } else {
             viviendaService.deleteById(id);
 
             return ResponseEntity.noContent().build();
@@ -210,15 +199,16 @@ public class ViviendaController {
     }
 
 
-    @PostMapping("{id}/inmobiliaria/{id2}")    public ResponseEntity<GetViviendaDTO> createViviendaWithRealEstate (@PathVariable Long id, @PathVariable Long id2, HttpServletRequest request){
+    @PostMapping("{id}/inmobiliaria/{id2}")
+    public ResponseEntity<GetViviendaDTO> createViviendaWithRealEstate(@PathVariable Long id, @PathVariable Long id2, HttpServletRequest request) {
 
         String token = jwtAuthorizationFilter.getJwtFromRequest(request);
-        UUID idPropietario= jwt.getUserIdFromJwt(token);
+        UUID idPropietario = jwt.getUserIdFromJwt(token);
 
         Optional<User> user = userEntityService.loadUserById(idPropietario);
 
         if (!user.get().getRoles().equals(UserRole.ADMIN) && !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         } else {
 
             Vivienda vivienda = viviendaService.getById(id);
@@ -230,8 +220,60 @@ public class ViviendaController {
             viviendaService.save(vivienda);
 
             GetViviendaDTO viviendaDTO = viviendaDTOConverter.viviendaToGetViviendaDTO(vivienda);
-            return ResponseEntity.status(HttpStatus.CREATED).body(viviendaDTO);        }
+            return ResponseEntity.status(HttpStatus.CREATED).body(viviendaDTO);
+        }
     }
 
+    @Operation(summary = "Borra la asociación entre una vivienda y una inmobiliaria")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha borrado la vivienda",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Vivienda.class))}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se ha encontrado la vivienda a la que le queremos quitar la inmobiliaria",
+                    content = @Content),
+    })
 
+    @DeleteMapping("/{id}/inmobiliaria")
+    public ResponseEntity deleteInmobiliariaFromVivienda(@PathVariable Long id, HttpServletRequest request) {
+
+        String token = jwtAuthorizationFilter.getJwtFromRequest(request);
+        UUID idPropietario = jwt.getUserIdFromJwt(token);
+
+        Optional<User> user = userEntityService.loadUserById(idPropietario);
+
+        //Boolean comprobacion=true;
+
+        /*for (User gestor : viviendaService.findById(id).get().getInmobiliaria().getGestores()) {
+            if (!gestor.getId().equals(idPropietario)) {
+
+                comprobacion=false;
+            }
+        }*/
+
+
+
+        if (!viviendaService.findById(id).isEmpty() && !user.get().getRoles().equals(UserRole.ADMIN)/* &&  !viviendaService.findById(id).get().getPropietario().getId().equals(idPropietario)&& !inmobiliariaService.findGestorOfViviendaId(viviendaService.findById(id).get().getInmobiliaria())*/) {
+
+
+            return ResponseEntity.notFound().build();
+
+        } else {
+
+            Inmobiliaria inmobiliaria = viviendaService.findById(id).get().getInmobiliaria();
+            viviendaService.findById(id).get().removeInmobiliaria(inmobiliaria);
+            viviendaService.save(viviendaService.findById(id).get());
+
+            return ResponseEntity.noContent().build();
+
+
+        }
+    }
 }
+
+
+
+
+
+

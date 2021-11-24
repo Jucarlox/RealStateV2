@@ -12,7 +12,5 @@ insert into INMOBILIARIA (id, nombre, email, telefono) values (NEXTVAL('hibernat
 
 
 
-asd@asaadfgfjsd.com
 
-asd@asASDASDASDASDASDASDASDASDASDASDASDASDASDASDASDAaadfgfjsd.com
 
