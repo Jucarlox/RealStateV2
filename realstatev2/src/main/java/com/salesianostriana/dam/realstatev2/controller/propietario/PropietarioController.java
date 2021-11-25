@@ -44,7 +44,6 @@ public class PropietarioController {
     public ResponseEntity<List<User>> findAll(){
 
         List<User> usuarios = userEntityService.loadUserByRol(UserRole.PROPIETARIO);
-
         if(usuarios.isEmpty()){
             return ResponseEntity.notFound().build();
         }
