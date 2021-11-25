@@ -74,8 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/inmobiliaria/").authenticated()
 
                 .anyRequest().authenticated();
-
-
+        
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 
         http.headers().frameOptions().disable();
