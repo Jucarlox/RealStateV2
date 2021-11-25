@@ -40,24 +40,24 @@
 
 * ### **Las funcionalidades que tiene la entidad Vivienda:**
 
-1. Añadir nueva vivienda. Se da de alta también al propietario a la vez.
-2. Obtener todas las propiedades. Se deben obtener solamente los datos que se vayan a utilizar.
-3. Obtener los datos de una vivienda. Se deben obtener también los datos del propietario.
+1. Nueva vivienda.
+2. Obtener todas las propiedades.
+3. Obtener los datos de una vivienda.
 4. Modificar una vivienda.
-5. Eliminar una vivienda (debe eliminar todos los intereses sobre dicha vivienda, pero no los interesados).
+5. Eliminar una vivienda.
 6. Establece que la vivienda con ID queda gestionada por la inmobiliaria ID2.
 7. Elimina la gestión de una vivienda por parte de una inmobiliaria.
-8. Añadir un nuevo interesado con la información de interés para la vivienda ID.
-9. Añadir un nuevo interés para la vivienda ID, pero rescatando la información de interesado con ID2.
-10. Eliminar el interés de un interesado por una vivienda.
-11. Obtener las viviendas por las que más gente se ha interesado.
 
 * ### **Las funcionalidades que tiene la entidad Inmobiliaria:**
 
-1. Añadir una nueva inmobiliaria
-2. Obtener todas inmobiliarias
-3. Obtener los datos de una inmobiliaria (debe obtener un listado sencillo de las viviendas gestionadas por la inmobiliaria).
-4. Eliminar una inmobiliaria (cuando se elimina, no se eliminan las viviendas gestionadas por esa inmobiliaria).
+1. Nueva inmobiliaria.
+2. Añade un nuevo usuario gestor a la inmobiliaria.
+3. Elimina a un usuario gestor de una inmobiliaria.
+4. Obtiene todos los gestores de una inmobiliaria.
+5. Obtener todas inmobiliarias.
+6. Obtener los datos de una inmobiliaria.
+7. Eliminar una inmobiliaria.
+
 * ### **Las funcionalidades que tiene la entidad Interesado:**
 
 1. Obtener los datos de todos los interesados
