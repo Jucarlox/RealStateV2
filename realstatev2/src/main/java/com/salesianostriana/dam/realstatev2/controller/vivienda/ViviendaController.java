@@ -303,6 +303,27 @@ public class ViviendaController {
     }
 
 
+    @Operation(summary = "Obtiene un top de las 5 viviendas con más interesados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se han encontrado las viviendas",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Vivienda.class))})
+    })
+    @GetMapping("/top")
+    public ResponseEntity<List<GetViviendaSummarizedDTO>> top10Viviendas (@RequestParam("n") int n) {
+        List<Vivienda> datos = viviendaService.findTop10ViviendaOrderByInteresas();
+
+        List<GetViviendaSummarizedDTO> lista = datos.stream()
+                .map(viviendaDTOConverter::viviendaToGetViviendaSummarizedDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(lista);
+
+
+    }
+
+
 
 
 
