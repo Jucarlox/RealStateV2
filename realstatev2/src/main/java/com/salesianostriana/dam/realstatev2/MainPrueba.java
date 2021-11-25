@@ -44,8 +44,6 @@ public class MainPrueba {
                 .password2("1234")
                 .build();
 
-
-
         Vivienda vivienda1 = Vivienda.builder()
                 .titulo("Casa 2")
                 .descripcion("Descripcion")

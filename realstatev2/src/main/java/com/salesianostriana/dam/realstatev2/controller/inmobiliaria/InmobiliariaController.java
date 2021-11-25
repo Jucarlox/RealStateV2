@@ -36,18 +36,19 @@ public class InmobiliariaController {
     private final InmobiliariaService inmobiliariaService;
     private final UserEntityService userEntityService;
     private final ConverterInmobiliariaDto converterInmobiliariaDto;
+
     @Operation(summary = "Crea una inmobiliaria")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
                     description = "Se ha creado la inmobiliaria",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = Inmobiliaria.class))}),
             @ApiResponse(responseCode = "400",
                     description = "No se ha guardado la inmobiliaria",
                     content = @Content),
     })
     @PostMapping("/")
-    public ResponseEntity<Inmobiliaria> create (@RequestBody Inmobiliaria inmobiliaria){
+    public ResponseEntity<Inmobiliaria> create(@RequestBody Inmobiliaria inmobiliaria) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -56,68 +57,79 @@ public class InmobiliariaController {
     }
 
 
-
-
-
+    @Operation(summary = "Añade un nuevo usuario gestor a la inmobiliaria")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha añade gestor",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Inmobiliaria.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "No se ha añadido el gestor",
+                    content = @Content),
+    })
     @PostMapping("/{id}/gestor")
-    public ResponseEntity<Inmobiliaria> createInmobiliariaWithGestor (@PathVariable Long id, @RequestBody CreateUserDto GestorDto, @AuthenticationPrincipal User userLogged) {
+    public ResponseEntity<Inmobiliaria> createInmobiliariaWithGestor(@PathVariable Long id, @RequestBody CreateUserDto GestorDto, @AuthenticationPrincipal User userLogged) {
 
-        Inmobiliaria inmobiliaria = inmobiliariaService.getById(id);
-
-        Boolean comprobacion = false;
-        for (User gestor : inmobiliaria.getGestores()) {
-            if (gestor.getId().equals(userLogged.getId())) {
-                comprobacion = true;
+        Optional<Inmobiliaria> inmobiliaria = inmobiliariaService.findById(id);
+        if (inmobiliaria.isPresent()) {
+            if (!userLogged.getRoles().equals(UserRole.ADMIN) && !inmobiliariaService.comprobacion(inmobiliaria.get(), userLogged)) {
+                return ResponseEntity.notFound().build();
+            } else {
+                userEntityService.saveGestorWithoutId(GestorDto, inmobiliaria.get());
+                return ResponseEntity
+                        .status(HttpStatus.CREATED)
+                        .body(inmobiliariaService.save(inmobiliaria.get()));
             }
-        }
-
-
-        if (!userLogged.getRoles().equals(UserRole.ADMIN) && !comprobacion) {
-            return ResponseEntity.notFound().build();
-        } else {
-            userEntityService.saveGestorWithoutId(GestorDto,inmobiliaria);
-            //converterInmobiliariaDto.inmobiliariaToGetInmobiliariaDTO(inmobiliaria)
-
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(inmobiliariaService.save(inmobiliaria));
-
-        }
+        } else return ResponseEntity.notFound().build();
 
     }
 
+    @Operation(summary = "Elimina a un usuario gestor de una inmobiliaria")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha eliminado el gestor",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Inmobiliaria.class))})
+    })
     @DeleteMapping("/gestor/{id}")
-    public ResponseEntity delete(@PathVariable UUID id, @AuthenticationPrincipal User userLogged){
+    public ResponseEntity delete(@PathVariable UUID id, @AuthenticationPrincipal User userLogged) {
 
         Optional<User> gestor = userEntityService.loadUserById(id);
 
-
+        if(gestor.isPresent()){
         if (!userLogged.getRoles().equals(UserRole.ADMIN) && gestor.get().getId().equals(userLogged.getId())) {
             return ResponseEntity.status(403).build();
-        }else {
+        } else {
             Inmobiliaria inmobiliaria = gestor.get().getInmobiliaria();
             gestor.get().removeInmobiliaria(inmobiliaria);
             userEntityService.save(gestor.get());
             return ResponseEntity.noContent().build();
         }
+        }else return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Obtiene todos los gestores de una inmobiliaria")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se han encontrado los gestores",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Inmobiliaria.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "No se han encontrado los gestores",
+                    content = @Content),
+    })
     @GetMapping("/{id}/gestor")
-    public ResponseEntity<Inmobiliaria> getGestoresOfInmobiliaria(@PathVariable Long id, @AuthenticationPrincipal User userLogged){
-        Inmobiliaria inmobiliaria = inmobiliariaService.getById(id);
+    public ResponseEntity<Inmobiliaria> getGestoresOfInmobiliaria(@PathVariable Long id, @AuthenticationPrincipal User userLogged) {
+        Optional<Inmobiliaria> inmobiliaria = inmobiliariaService.findById(id);
 
-        Boolean comprobacion = false;
-        for (User gestor : inmobiliaria.getGestores()) {
-            if (gestor.getId().equals(userLogged.getId())) {
-                comprobacion = true;
+
+        if(inmobiliaria.isPresent()) {
+            if (!userLogged.getRoles().equals(UserRole.ADMIN) && !inmobiliariaService.comprobacion(inmobiliaria.get(), userLogged)) {
+                return ResponseEntity.status(403).build();
+            } else {
+                return ResponseEntity.ok().body(inmobiliaria.get());
             }
-        }
-
-        if(!userLogged.getRoles().equals(UserRole.ADMIN) && !comprobacion) {
-            return ResponseEntity.status(403).build();
-        }else {
-            return ResponseEntity.ok().body(inmobiliaria);
-        }
+        }else return ResponseEntity.noContent().build();
 
     }
 
@@ -126,19 +138,19 @@ public class InmobiliariaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se han encontrado las inmobiliarias",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = Inmobiliaria.class))}),
             @ApiResponse(responseCode = "404",
                     description = "No se han encontrado las inmobiliarias",
                     content = @Content),
     })
     @GetMapping("/")
-    public ResponseEntity<List<GetInmobiliariaDto>> findAll(){
-        List <Inmobiliaria> datos= inmobiliariaService.findAll();
+    public ResponseEntity<List<GetInmobiliariaDto>> findAll() {
+        List<Inmobiliaria> datos = inmobiliariaService.findAll();
 
-        if (datos.isEmpty()){
+        if (datos.isEmpty()) {
             return ResponseEntity.notFound().build();
-        }else {
+        } else {
             List<GetInmobiliariaDto> lista = datos.stream()
                     .map(converterInmobiliariaDto::getInmobiliariaToInmobiliariaDto)
                     .collect(Collectors.toList());
@@ -149,25 +161,23 @@ public class InmobiliariaController {
     }
 
 
-
     @Operation(summary = "Obtiene una inmobiliaria creada")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Se ha encontrado la inmobiliaria",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = Inmobiliaria.class))}),
             @ApiResponse(responseCode = "400",
                     description = "No se han encontrado la inmobiliaria",
                     content = @Content),
     })
     @GetMapping("/{id}")
-    public ResponseEntity<List<GetInmobiliariaDto>> findOne (@PathVariable Long id){
+    public ResponseEntity<List<GetInmobiliariaDto>> findOne(@PathVariable Long id) {
         Optional<Inmobiliaria> inmo = inmobiliariaService.findById(id);
-        if(inmobiliariaService.findById(id).isEmpty()){
+        if (inmobiliariaService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
-        }
-        else{
-            List<GetInmobiliariaDto> inmobiliariaDTO= inmo.stream()
+        } else {
+            List<GetInmobiliariaDto> inmobiliariaDTO = inmo.stream()
                     .map(converterInmobiliariaDto::getInmobiliariaToInmobiliariaDto)
                     .collect(Collectors.toList());
             return ResponseEntity.ok().body(inmobiliariaDTO);
@@ -179,17 +189,17 @@ public class InmobiliariaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204",
                     description = "Se ha borrado la inmobiliaria",
-                    content = { @Content(mediaType = "application/json",
+                    content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = Inmobiliaria.class))})
     })
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<GetInmobiliariaDto> borrarInmobiliaria(@PathVariable Long id){
+    public ResponseEntity<GetInmobiliariaDto> borrarInmobiliaria(@PathVariable Long id) {
 
-        if(inmobiliariaService.findById(id).isEmpty() ){
+        if (inmobiliariaService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
-        }else {
-            Optional<Inmobiliaria> inmobiliaria=inmobiliariaService.findById(id);
+        } else {
+            Optional<Inmobiliaria> inmobiliaria = inmobiliariaService.findById(id);
 
             for (Vivienda vivienda : inmobiliaria.get().getViviendas()) {
                 vivienda.setInmobiliaria(null);
@@ -205,7 +215,6 @@ public class InmobiliariaController {
             return ResponseEntity.noContent().build();
         }
     }
-
 
 
 }
