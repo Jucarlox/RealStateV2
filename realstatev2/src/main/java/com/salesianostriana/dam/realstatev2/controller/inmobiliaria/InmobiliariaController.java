@@ -132,7 +132,7 @@ public class InmobiliariaController {
         }else return ResponseEntity.noContent().build();
 
     }
-
+//////////////////////////////////////////////////////////////////////////////ARREGLOS//////////////////////////////////////////////////////////////////////////////
 
     @Operation(summary = "Obtiene todos las inmobiliarias creadas")
     @ApiResponses(value = {
