@@ -1,9 +1,13 @@
 package com.salesianostriana.dam.realstatev2.controller.propietario;
 
+import com.salesianostriana.dam.realstatev2.dto.inmobiliaria.ConverterInmobiliariaDto;
+import com.salesianostriana.dam.realstatev2.dto.inmobiliaria.GetInmobiliariaDto;
 import com.salesianostriana.dam.realstatev2.dto.propietario.GetPropietarioViviendaDto;
 import com.salesianostriana.dam.realstatev2.dto.propietario.PropietarioDTOConverter;
+import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
 import com.salesianostriana.dam.realstatev2.security.jwt.JwtAuthorizationFilter;
 import com.salesianostriana.dam.realstatev2.security.jwt.JwtProvider;
+import com.salesianostriana.dam.realstatev2.services.InmobiliariaService;
 import com.salesianostriana.dam.realstatev2.users.model.User;
 import com.salesianostriana.dam.realstatev2.users.model.UserRole;
 import com.salesianostriana.dam.realstatev2.users.services.UserEntityService;
@@ -33,6 +37,8 @@ public class PropietarioController {
     private final PropietarioDTOConverter propietarioDTOConverter;
     private final JwtProvider jwt;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
+    private final InmobiliariaService inmobiliariaService;
+    private final ConverterInmobiliariaDto converterInmobiliariaDto;
 
     @GetMapping("/")
     public ResponseEntity<List<User>> findAll(){
@@ -95,6 +101,8 @@ public class PropietarioController {
 
 
     }
+
+
 
 
 
