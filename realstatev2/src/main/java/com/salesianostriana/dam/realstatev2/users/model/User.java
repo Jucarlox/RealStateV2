@@ -116,4 +116,6 @@ public class User implements UserDetails {
         i.getGestores().remove(this);
         this.inmobiliaria = null;
     }
+
+
 }
