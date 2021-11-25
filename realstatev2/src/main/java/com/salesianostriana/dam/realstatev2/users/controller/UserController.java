@@ -9,17 +9,17 @@ import com.salesianostriana.dam.realstatev2.users.dto.CreateUserDto;
 import com.salesianostriana.dam.realstatev2.users.dto.GetUserDto;
 import com.salesianostriana.dam.realstatev2.users.dto.UserDtoConverter;
 import com.salesianostriana.dam.realstatev2.users.model.User;
+import com.salesianostriana.dam.realstatev2.users.model.UserRole;
 import com.salesianostriana.dam.realstatev2.users.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -78,6 +78,23 @@ public class UserController {
             interesados.add(i.getInteresado());
         }
     return  ResponseEntity.ok(interesados);
+    }
+
+
+    @GetMapping("/interesado/{id}")
+    public ResponseEntity<User> getInteresado (@PathVariable UUID id, @AuthenticationPrincipal User userLogged){
+
+        List<Interesa> interesas= interesaService.findInteresados();
+        Optional<User> interesado=null;
+
+
+        for (Interesa i: interesas){
+            if(i.getInteresado().getId().equals(id)){
+                if(i.getInteresado().getId().equals(userLogged.getId()) || userLogged.getRoles().equals(UserRole.ADMIN))
+                interesado = userEntityService.loadUserById(id);
+            }
+        }
+        return  ResponseEntity.ok(interesado.get());
     }
 
 }
