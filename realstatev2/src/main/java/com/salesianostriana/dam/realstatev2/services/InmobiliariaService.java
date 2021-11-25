@@ -16,7 +16,6 @@ public class InmobiliariaService extends BaseService<Inmobiliaria, Long, Inmobil
 
     }
 
-
     public Boolean comprobacion (Inmobiliaria inmobiliaria, @AuthenticationPrincipal User userLogged){
         Boolean comprobacion = false;
             for (User gestor : inmobiliaria.getGestores()) {
