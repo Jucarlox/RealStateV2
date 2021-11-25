@@ -35,7 +35,7 @@
 3. Luego a spring-boot
 4. Para finalizar clicar a spring-boot-run
 
-## 🛠️ ¿Qué puede hacer Realstate? 🛠️
+## 🛠️ ¿Qué puede hacer RealstateV2? 🛠️
 
 
 * ### **Las funcionalidades que tiene la entidad Vivienda:**
