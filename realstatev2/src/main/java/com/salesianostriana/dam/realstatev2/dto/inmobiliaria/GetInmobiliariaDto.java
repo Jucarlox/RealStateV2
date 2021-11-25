@@ -9,14 +9,15 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 @SuperBuilder
 public class GetInmobiliariaDto {
-    private String nombre;
-    private String email;
-    private String telefono;
-    private List<Vivienda> viviendas;
-    private String gestor_nombre;
-    private String gestor_email;
+
+    private Long id;
+
+    private String nombre,telefono,email;
+    private List<String> viviendas;
+
+
+
 }

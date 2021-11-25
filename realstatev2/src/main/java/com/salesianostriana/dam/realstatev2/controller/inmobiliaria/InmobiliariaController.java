@@ -21,8 +21,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -117,4 +119,35 @@ public class InmobiliariaController {
         }
 
     }
+
+
+    @Operation(summary = "Obtiene todos las inmobiliarias creadas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se han encontrado las inmobiliarias",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Inmobiliaria.class))}),
+            @ApiResponse(responseCode = "404",
+                    description = "No se han encontrado las inmobiliarias",
+                    content = @Content),
+    })
+    @GetMapping("/")
+    public ResponseEntity<List<GetInmobiliariaDto>> findAll(){
+        List <Inmobiliaria> datos= inmobiliariaService.findAll();
+
+        if (datos.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }else {
+            List<GetInmobiliariaDto> lista = datos.stream()
+                    .map(converterInmobiliariaDto::getInmobiliariaToInmobiliariaDto)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok().body(lista);
+        }
+
+    }
+
+
+
+
 }

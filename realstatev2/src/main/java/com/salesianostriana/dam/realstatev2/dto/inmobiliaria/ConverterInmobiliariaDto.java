@@ -8,6 +8,8 @@ import com.salesianostriana.dam.realstatev2.users.dto.GetUserDto;
 import com.salesianostriana.dam.realstatev2.users.model.User;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -27,7 +29,7 @@ public class ConverterInmobiliariaDto {
     }
 
 
-    public GetInmobiliariaDto inmobiliariaToGetInmobiliariaDTO(Inmobiliaria i){
+    /*public GetInmobiliariaDto inmobiliariaToGetInmobiliariaDTO(Inmobiliaria i){
         return GetInmobiliariaDto.builder()
                 .nombre(i.getNombre())
                 .email(i.getEmail())
@@ -37,5 +39,23 @@ public class ConverterInmobiliariaDto {
                 .gestor_email(i.getGestores().iterator().next().getEmail())
 
                 .build();
+    }*/
+
+    public GetInmobiliariaDto getInmobiliariaToInmobiliariaDto(Inmobiliaria in){
+
+        List<String> nombreVivienda = new ArrayList<>();
+        for (int i=0; i<in.getViviendas().size();i++){
+            nombreVivienda.add(in.getViviendas().get(i).getTitulo());
+        }
+
+        return GetInmobiliariaDto
+                .builder()
+                .id(in.getId())
+                .nombre(in.getNombre())
+                .email(in.getEmail())
+                .telefono(in.getTelefono())
+                .viviendas(nombreVivienda)
+                .build();
+
     }
 }
