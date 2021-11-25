@@ -40,6 +40,16 @@ public class PropietarioController {
     private final InmobiliariaService inmobiliariaService;
     private final ConverterInmobiliariaDto converterInmobiliariaDto;
 
+    @Operation(summary = "Obtiene todos los propietarios")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se han encontrado los propietarios",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "No se han encontrado los propietarios",
+                    content = @Content),
+    })
     @GetMapping("/")
     public ResponseEntity<List<User>> findAll(){
 
@@ -55,21 +65,37 @@ public class PropietarioController {
         }
     }
 
+
+
+    @Operation(summary = "Obtiene un propietario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se han encontrado el propietario",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "No se han encontrado el propietario",
+                    content = @Content),
+    })
+
     @GetMapping("/{id}")
     public ResponseEntity<List<GetPropietarioViviendaDto>> findOne(@PathVariable UUID id, @AuthenticationPrincipal User userLogged){
         Optional<User> propietario = userEntityService.loadUserById(id);
 
 
 
-
-        if(!userEntityService.loadUserById(id).isEmpty() && !userLogged.getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(userLogged.getId())){
+        if(propietario.isPresent()){
+            if(!userEntityService.loadUserById(id).isEmpty() && !userLogged.getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(userLogged.getId())){
+                return ResponseEntity.notFound().build();
+            }
+            else{
+                List<GetPropietarioViviendaDto> propietarioDTOS= propietario.stream()
+                        .map(propietarioDTOConverter::propietarioToGetPropietarioViviendaDto)
+                        .collect(Collectors.toList());
+                return ResponseEntity.ok().body(propietarioDTOS);
+            }
+        }else{
             return ResponseEntity.notFound().build();
-        }
-        else{
-        List<GetPropietarioViviendaDto> propietarioDTOS= propietario.stream()
-                .map(propietarioDTOConverter::propietarioToGetPropietarioViviendaDto)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok().body(propietarioDTOS);
         }
     }
 
@@ -82,23 +108,17 @@ public class PropietarioController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable UUID id, @AuthenticationPrincipal User userLogged) {
-
         Optional<User> propietario = userEntityService.loadUserById(id);
-
-
-
-        if(!userEntityService.loadUserById(id).isEmpty() && !userLogged.getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(userLogged.getId())){
-            return ResponseEntity.status(403).build();
+        if(propietario.isPresent()) {
+            if (!userLogged.getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(userLogged.getId())) {
+                return ResponseEntity.status(403).build();
+            } else {
+                userEntityService.deleteById(id);
+                return ResponseEntity.noContent().build();
+            }
+        }else {
+            return ResponseEntity.notFound().build();
         }
-
-
-        else {
-            userEntityService.deleteById(id);
-
-            return ResponseEntity.noContent().build();
-        }
-
-
     }
 
 

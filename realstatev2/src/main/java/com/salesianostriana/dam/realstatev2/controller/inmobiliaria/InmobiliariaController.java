@@ -132,7 +132,6 @@ public class InmobiliariaController {
         }else return ResponseEntity.noContent().build();
 
     }
-//////////////////////////////////////////////////////////////////////////////ARREGLOS//////////////////////////////////////////////////////////////////////////////
 
     @Operation(summary = "Obtiene todos las inmobiliarias creadas")
     @ApiResponses(value = {
@@ -174,7 +173,7 @@ public class InmobiliariaController {
     @GetMapping("/{id}")
     public ResponseEntity<List<GetInmobiliariaDto>> findOne(@PathVariable Long id) {
         Optional<Inmobiliaria> inmo = inmobiliariaService.findById(id);
-        if (inmobiliariaService.findById(id).isEmpty()) {
+        if (inmo.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
             List<GetInmobiliariaDto> inmobiliariaDTO = inmo.stream()
@@ -183,6 +182,7 @@ public class InmobiliariaController {
             return ResponseEntity.ok().body(inmobiliariaDTO);
         }
     }
+
 
 
     @Operation(summary = "Borra una inmobiliaria creada")
@@ -195,23 +195,17 @@ public class InmobiliariaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<GetInmobiliariaDto> borrarInmobiliaria(@PathVariable Long id) {
-
-        if (inmobiliariaService.findById(id).isEmpty()) {
+        Optional<Inmobiliaria> inmobiliaria = inmobiliariaService.findById(id);
+        if (inmobiliaria.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
-            Optional<Inmobiliaria> inmobiliaria = inmobiliariaService.findById(id);
-
             for (Vivienda vivienda : inmobiliaria.get().getViviendas()) {
                 vivienda.setInmobiliaria(null);
             }
-
             for (User gestor : inmobiliaria.get().getGestores()) {
                 gestor.setInmobiliaria(null);
             }
-
-
             inmobiliariaService.deleteById(id);
-
             return ResponseEntity.noContent().build();
         }
     }
