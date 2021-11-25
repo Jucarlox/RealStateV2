@@ -1,13 +1,19 @@
 package com.salesianostriana.dam.realstatev2.controller.vivienda;
 
+import com.salesianostriana.dam.realstatev2.dto.interesa.GetInteresaDTO;
+import com.salesianostriana.dam.realstatev2.dto.interesa.GetInteresadoDTO;
+import com.salesianostriana.dam.realstatev2.dto.interesa.InteresadoDTOConverter;
 import com.salesianostriana.dam.realstatev2.dto.vivienda.GetViviendaDTO;
 import com.salesianostriana.dam.realstatev2.dto.vivienda.GetViviendaSummarizedDTO;
 import com.salesianostriana.dam.realstatev2.dto.vivienda.ViviendaDTOConverter;
 import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
+import com.salesianostriana.dam.realstatev2.model.Interesa;
 import com.salesianostriana.dam.realstatev2.model.Vivienda;
+import com.salesianostriana.dam.realstatev2.repository.InteresaRepository;
 import com.salesianostriana.dam.realstatev2.security.jwt.JwtAuthorizationFilter;
 import com.salesianostriana.dam.realstatev2.security.jwt.JwtProvider;
 import com.salesianostriana.dam.realstatev2.services.InmobiliariaService;
+import com.salesianostriana.dam.realstatev2.services.InteresaService;
 import com.salesianostriana.dam.realstatev2.services.ViviendaService;
 import com.salesianostriana.dam.realstatev2.users.model.User;
 import com.salesianostriana.dam.realstatev2.users.model.UserRole;
@@ -45,6 +51,8 @@ public class ViviendaController {
     private final ViviendaService viviendaService;
     private final InmobiliariaService inmobiliariaService;
     private final ViviendaDTOConverter viviendaDTOConverter;
+    private final InteresadoDTOConverter interesadoDTOConverter;
+    private final InteresaService interesaService;
 
 
     @Operation(summary = "Crea una nueva vivienda")
@@ -241,6 +249,37 @@ public class ViviendaController {
             viviendaService.save(viviendaService.findById(id).get());
             return ResponseEntity.noContent().build();
         }
+    }
+
+    @Operation(summary = "Crea un nuevo interesado e interesa asociado a una vivienda")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201",
+                    description = "Se ha creado el interesado y el interesa asociado a una vivienda",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Vivienda.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "No se ha guardado el interesado y el interesa asociado a una vivienda",
+                    content = @Content),
+    })
+    @PostMapping("/{id}/meinteresa")
+    public ResponseEntity<User> createInteresa (@RequestBody GetInteresaDTO dto, @PathVariable Long id){
+
+        Optional<Vivienda> vivienda=viviendaService.findById(id);
+
+        User interesado= vivienda.get().getPropietario();
+        Interesa interesa= interesadoDTOConverter.b(dto);
+        userEntityService.save(interesado);
+        interesa.addInteresado(interesado);
+        interesa.setVivienda(viviendaService.findById(id).get());
+
+        interesaService.save(interesa);
+        interesado.getInteresas().add(interesa);
+
+        return  ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userEntityService.save(interesado));
+
+
     }
 }
 

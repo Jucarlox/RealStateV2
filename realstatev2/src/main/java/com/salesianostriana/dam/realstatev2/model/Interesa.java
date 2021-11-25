@@ -38,4 +38,27 @@ public class Interesa implements Serializable {
     @CreatedDate
     private LocalDateTime createdDate = LocalDateTime.now();
     private String mensaje;
+
+
+
+    public void addInteresado(User i) {
+        this.interesado = i;
+        i.getInteresas().add(this);
+    }
+
+    public void removeInteresado(User i) {
+        i.getInteresas().remove(this);
+        this.interesado = null;
+    }
+
+    public void addVivienda(Vivienda v) {
+        this.vivienda = v;
+        v.getInteresas().add(this);
+    }
+
+    public void removeVivienda(Vivienda v) {
+        v.getInteresas().remove(this);
+        this.vivienda = null;
+
+    }
 }

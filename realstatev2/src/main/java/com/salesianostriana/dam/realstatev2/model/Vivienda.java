@@ -95,4 +95,6 @@ public class Vivienda implements Serializable {
         this.inmobiliaria = null;
     }
 
+
+
 }
