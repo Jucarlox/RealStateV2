@@ -47,6 +47,9 @@
 5. Eliminar una vivienda.
 6. Establece que la vivienda con ID queda gestionada por la inmobiliaria ID2.
 7. Elimina la gestión de una vivienda por parte de una inmobiliaria.
+8. Se añade el interés de un usuario por una vivienda.
+9. Eliminar el interés de un interesado por una vivienda.
+10. Obtener las n (en este ejemplo de URL, las 10) viviendas por las que más gente se ha interesado.
 
 * ### **Las funcionalidades que tiene la entidad Inmobiliaria:**
 
@@ -60,11 +63,5 @@
 
 * ### **Las funcionalidades que tiene la entidad Interesado:**
 
-1. Obtener los datos de todos los interesados
-2. Obtener los datos de un interesado
-
-* ### **Las funcionalidades que tiene la entidad Propietario:**
-
-1. Obtener todos los propietarios
-2. Obtener los datos de un propietario (deben incluir también algunos datos de las viviendas que tiene en propiedad).
-3. Eliminar un propietario (se deben eliminar en cascada las viviendas de este propietario).
+1. Obtener los datos de todos los interesados (es decir, de todos los usuarios que están interesados por alguna vivienda).
+2. Obtener los datos de un interesado.
