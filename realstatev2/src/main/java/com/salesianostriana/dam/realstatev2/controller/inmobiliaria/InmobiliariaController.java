@@ -149,5 +149,31 @@ public class InmobiliariaController {
 
 
 
+    @Operation(summary = "Obtiene una inmobiliaria creada")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Se ha encontrado la inmobiliaria",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Inmobiliaria.class))}),
+            @ApiResponse(responseCode = "400",
+                    description = "No se han encontrado la inmobiliaria",
+                    content = @Content),
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<List<GetInmobiliariaDto>> findOne (@PathVariable Long id){
+        Optional<Inmobiliaria> inmo = inmobiliariaService.findById(id);
+        if(inmobiliariaService.findById(id).isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        else{
+            List<GetInmobiliariaDto> inmobiliariaDTO= inmo.stream()
+                    .map(converterInmobiliariaDto::getInmobiliariaToInmobiliariaDto)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok().body(inmobiliariaDTO);
+        }
+    }
+
+
+
 
 }
