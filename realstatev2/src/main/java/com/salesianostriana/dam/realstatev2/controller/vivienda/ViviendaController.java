@@ -54,7 +54,7 @@ public class ViviendaController {
     private final InteresadoDTOConverter interesadoDTOConverter;
     private final InteresaService interesaService;
 
-
+    //////////////////////////////////////////////////////////////////////////////ARREGLOS//////////////////////////////////////////////////////////////////////////////
     @Operation(summary = "Crea una nueva vivienda")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
