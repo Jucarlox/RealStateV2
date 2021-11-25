@@ -4,6 +4,7 @@ import com.salesianostriana.dam.realstatev2.dto.inmobiliaria.ConverterInmobiliar
 import com.salesianostriana.dam.realstatev2.dto.inmobiliaria.CreateInmobiliariaGestorDto;
 import com.salesianostriana.dam.realstatev2.dto.inmobiliaria.GetInmobiliariaDto;
 import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
+import com.salesianostriana.dam.realstatev2.model.Vivienda;
 import com.salesianostriana.dam.realstatev2.services.InmobiliariaService;
 import com.salesianostriana.dam.realstatev2.services.ViviendaService;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateUserDto;
@@ -173,6 +174,37 @@ public class InmobiliariaController {
         }
     }
 
+
+    @Operation(summary = "Borra una inmobiliaria creada")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204",
+                    description = "Se ha borrado la inmobiliaria",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Inmobiliaria.class))})
+    })
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<GetInmobiliariaDto> borrarInmobiliaria(@PathVariable Long id){
+
+        if(inmobiliariaService.findById(id).isEmpty() ){
+            return ResponseEntity.notFound().build();
+        }else {
+            Optional<Inmobiliaria> inmobiliaria=inmobiliariaService.findById(id);
+
+            for (Vivienda vivienda : inmobiliaria.get().getViviendas()) {
+                vivienda.setInmobiliaria(null);
+            }
+
+            for (User gestor : inmobiliaria.get().getGestores()) {
+                gestor.setInmobiliaria(null);
+            }
+
+
+            inmobiliariaService.deleteById(id);
+
+            return ResponseEntity.noContent().build();
+        }
+    }
 
 
 
