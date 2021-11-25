@@ -41,10 +41,12 @@ public class Inmobiliaria implements Serializable {
 
         @Builder.Default
         @OneToMany(mappedBy = "inmobiliaria",fetch = FetchType.EAGER)
-
         private List<User> gestores=new ArrayList<>();
 
-
+        @PreRemove
+        public void preRemove(){
+                gestores.forEach(v -> v.setInmobiliaria(null));
+        }
 
 
 
