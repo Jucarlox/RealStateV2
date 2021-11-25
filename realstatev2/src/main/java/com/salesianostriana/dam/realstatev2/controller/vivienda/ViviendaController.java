@@ -262,24 +262,44 @@ public class ViviendaController {
                     content = @Content),
     })
     @PostMapping("/{id}/meinteresa")
-    public ResponseEntity<User> createInteresa (@RequestBody GetInteresaDTO dto, @PathVariable Long id){
+    public ResponseEntity<User> createInteresa (@RequestBody GetInteresaDTO dto, @PathVariable Long id, @AuthenticationPrincipal User userLogged){
 
         Optional<Vivienda> vivienda=viviendaService.findById(id);
 
-        User interesado= vivienda.get().getPropietario();
+
         Interesa interesa= interesadoDTOConverter.b(dto);
-        userEntityService.save(interesado);
-        interesa.addInteresado(interesado);
-        interesa.setVivienda(viviendaService.findById(id).get());
+
+        interesa.addInteresado(userLogged);
+        interesa.addVivienda(vivienda.get());
 
         interesaService.save(interesa);
-        interesado.getInteresas().add(interesa);
+        userLogged.getInteresas().add(interesa);
 
         return  ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userEntityService.save(interesado));
+                .body(userEntityService.save(userLogged));
+    }
+
+    @DeleteMapping("/{id}/meinteresa")
+    public ResponseEntity<?> deleteInteres(@PathVariable Long id, @AuthenticationPrincipal User userLogged) {
+
+        if(viviendaService.findById(id).isEmpty()){
+            return ResponseEntity.notFound().build();
+        } else {
+
+            List<Interesa> interesaList = viviendaService.findById(id).get().getInteresas();
+
+            for (Interesa i : interesaList){
+                if(i.getInteresado().getId().equals(userLogged.getId())){
+                    interesaService.delete(i);
+                    return ResponseEntity.noContent().build();
+                }
 
 
+
+            }
+        }
+        return ResponseEntity.badRequest().build();
     }
 }
 
