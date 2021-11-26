@@ -27,7 +27,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json");
 
         Map<String, String> mensajes =
-                Map.of("mensaje", authException.getMessage());
+                Map.of("mensaje", "Casgasteee no tienes permisos");
 
         String strjson = mapper.writeValueAsString(mensajes);
 
