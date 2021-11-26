@@ -11,7 +11,7 @@
 * #### Vivienda :house:
 
 * #### Inmobiliaria :department_store:
-* #### Persona :frowning_man:
+* #### User :frowning_man:
 
 * #### Interesa :cupid:
 
