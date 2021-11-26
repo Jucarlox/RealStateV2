@@ -19,7 +19,7 @@ public class ViviendaService extends BaseService<Vivienda, Long, ViviendaReposit
 
     }
 
-    public Boolean comprobacion (Vivienda vivienda, @AuthenticationPrincipal User userLogged){
+    public Boolean comprobacionGestora (Vivienda vivienda, @AuthenticationPrincipal User userLogged){
         Boolean comprobacion = false;
         for (User gestor : vivienda.getInmobiliaria().getGestores()) {
             if (gestor.getId().equals(userLogged.getId())) {
@@ -29,4 +29,6 @@ public class ViviendaService extends BaseService<Vivienda, Long, ViviendaReposit
         }
         return comprobacion;
     }
+
+
 }
