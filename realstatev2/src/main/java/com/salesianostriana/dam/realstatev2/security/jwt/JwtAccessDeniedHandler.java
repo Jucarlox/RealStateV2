@@ -26,7 +26,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         httpServletResponse.setContentType("application/json");
 
         Map<String, String> mensajes =
-                Map.of("mensaje", "Casgasteee");
+                Map.of("mensaje", "Cagasteee no tienes acceso");
 
         String strjson = mapper.writeValueAsString(mensajes);
 

@@ -74,7 +74,7 @@ public class InmobiliariaController {
         Optional<Inmobiliaria> inmobiliaria = inmobiliariaService.findById(id);
         if (inmobiliaria.isPresent()) {
             if (!userLogged.getRoles().equals(UserRole.ADMIN) && !inmobiliariaService.comprobacion(inmobiliaria.get(), userLogged)) {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.status(403).build();
             } else {
                 userEntityService.saveGestorWithoutId(GestorDto, inmobiliaria.get());
                 inmobiliariaService.save(inmobiliaria.get());

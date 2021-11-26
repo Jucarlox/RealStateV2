@@ -23,7 +23,9 @@ public class Vivienda implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Al hacerlo en auto, peta
     private Long id;
 
-    private String titulo, descripcion, avatar, latlng;
+    private String titulo, avatar, latlng;
+    @Lob
+    private String descripcion;
     private String direccion, poblacion, provincia;
 
     @Column(name = "codigoPostal")
