@@ -3,6 +3,7 @@ package com.salesianostriana.dam.realstatev2.controller.inmobiliaria;
 import com.salesianostriana.dam.realstatev2.dto.inmobiliaria.ConverterInmobiliariaDto;
 import com.salesianostriana.dam.realstatev2.dto.inmobiliaria.CreateInmobiliariaGestorDto;
 import com.salesianostriana.dam.realstatev2.dto.inmobiliaria.GetInmobiliariaDto;
+import com.salesianostriana.dam.realstatev2.dto.inmobiliaria.GetInmobiliariaGestorDto;
 import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
 import com.salesianostriana.dam.realstatev2.model.Vivienda;
 import com.salesianostriana.dam.realstatev2.services.InmobiliariaService;
@@ -68,7 +69,7 @@ public class InmobiliariaController {
                     content = @Content),
     })
     @PostMapping("/{id}/gestor")
-    public ResponseEntity<Inmobiliaria> createInmobiliariaWithGestor(@PathVariable Long id, @RequestBody CreateUserDto GestorDto, @AuthenticationPrincipal User userLogged) {
+    public ResponseEntity<GetInmobiliariaGestorDto> createInmobiliariaWithGestor(@PathVariable Long id, @RequestBody CreateUserDto GestorDto, @AuthenticationPrincipal User userLogged) {
 
         Optional<Inmobiliaria> inmobiliaria = inmobiliariaService.findById(id);
         if (inmobiliaria.isPresent()) {
@@ -76,9 +77,10 @@ public class InmobiliariaController {
                 return ResponseEntity.notFound().build();
             } else {
                 userEntityService.saveGestorWithoutId(GestorDto, inmobiliaria.get());
+                inmobiliariaService.save(inmobiliaria.get());
                 return ResponseEntity
                         .status(HttpStatus.CREATED)
-                        .body(inmobiliariaService.save(inmobiliaria.get()));
+                        .body(converterInmobiliariaDto.getInmobiliariaGestorDto(inmobiliaria.get()));
             }
         } else return ResponseEntity.notFound().build();
 
@@ -119,7 +121,7 @@ public class InmobiliariaController {
                     content = @Content),
     })
     @GetMapping("/{id}/gestor")
-    public ResponseEntity<Inmobiliaria> getGestoresOfInmobiliaria(@PathVariable Long id, @AuthenticationPrincipal User userLogged) {
+    public ResponseEntity<GetInmobiliariaGestorDto> getGestoresOfInmobiliaria(@PathVariable Long id, @AuthenticationPrincipal User userLogged) {
         Optional<Inmobiliaria> inmobiliaria = inmobiliariaService.findById(id);
 
 
@@ -127,7 +129,7 @@ public class InmobiliariaController {
             if (!userLogged.getRoles().equals(UserRole.ADMIN) && !inmobiliariaService.comprobacion(inmobiliaria.get(), userLogged)) {
                 return ResponseEntity.status(403).build();
             } else {
-                return ResponseEntity.ok().body(inmobiliaria.get());
+                return ResponseEntity.ok().body(converterInmobiliariaDto.getInmobiliariaGestorDto(inmobiliaria.get()));
             }
         }else return ResponseEntity.noContent().build();
 
