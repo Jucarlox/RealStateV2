@@ -15,6 +15,9 @@ import java.util.Optional;
 @Component
 public class ConverterInmobiliariaDto {
 
+
+
+
     public User convertInmobiliariaDto(CreateInmobiliariaGestorDto createInmobiliariaGestorDto) {
         return User.builder()
                 .nombre(createInmobiliariaGestorDto.getNombre())
@@ -57,5 +60,23 @@ public class ConverterInmobiliariaDto {
                 .viviendas(nombreVivienda)
                 .build();
 
+    }
+
+    public GetInmobiliariaGestorDto getInmobiliariaGestorDto(Inmobiliaria in){
+        List<String> nombreGestor = new ArrayList<>();
+        List<String> nombreVivienda = new ArrayList<>();
+        for (int i=0; i<in.getViviendas().size();i++){
+            nombreVivienda.add(in.getViviendas().get(i).getTitulo());
+        }
+        for (int i=0; i<in.getGestores().size();i++){
+            nombreGestor.add(in.getGestores().get(i).getNombre());
+        }
+        return GetInmobiliariaGestorDto.builder()
+                .id(in.getId())
+                .nombre(in.getNombre())
+                .telefono(in.getTelefono())
+                .titulo_viviendas(nombreVivienda)
+                .nombre_gestores(nombreGestor)
+                .build();
     }
 }
