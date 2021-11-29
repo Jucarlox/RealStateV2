@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/vivienda")
 public class ViviendaController {
 
-    private final JwtProvider jwt;
+    private final JwtProvider jwt; // TODO ¿Qué hacen estas clases aquí?
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
     private final UserEntityService userEntityService;
     private final ViviendaService viviendaService;

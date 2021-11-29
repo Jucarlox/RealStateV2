@@ -41,12 +41,16 @@ public class UserController {
 
     }
 
+
+
+
+
     @PostMapping("/auth/register/gestor")
     public ResponseEntity<GetUserDto> nuevoGestor(@RequestBody CreateGestorDto newGestor) {
-
-
-
-
+        // TODO Esta petición no está bien implementada según la especificación
+        // Ya que el gestor se inserta en la base de datos sí o si, y luego se devuelve
+        // un 400 si no tiene inmobiliaria.
+        // Deberían hacerse todas las comprobaciones antes de  insertar
         User saved= userEntityService.saveGestor(newGestor);
 
         if (saved == null || saved.getInmobiliaria()== null)
@@ -58,6 +62,7 @@ public class UserController {
 
     @PostMapping("/auth/register/admin")
     public ResponseEntity<GetUserDto> nuevoAdmin(@RequestBody CreateUserDto newAdmin) {
+        // TODO Lo mismo que en la petición de arriba.
         User saved = userEntityService.saveAdmin(newAdmin);
 
         if (saved == null)
@@ -70,7 +75,7 @@ public class UserController {
 
     @GetMapping("/interesado/")
     public ResponseEntity<List<User>> getInteresados (){
-
+        // TODO No se muy bien qué hace este método
         List<Interesa> interesas= interesaService.findInteresados();
         List<User> interesados= new ArrayList<>();
 
@@ -83,7 +88,7 @@ public class UserController {
 
     @GetMapping("/interesado/{id}")
     public ResponseEntity<User> getInteresado (@PathVariable UUID id, @AuthenticationPrincipal User userLogged){
-
+        // TODO No se muy bien qué hace este método
         List<Interesa> interesas= interesaService.findInteresados();
         Optional<User> interesado=null;
 

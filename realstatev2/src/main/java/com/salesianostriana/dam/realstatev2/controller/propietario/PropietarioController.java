@@ -35,7 +35,7 @@ public class PropietarioController {
 
     private final UserEntityService userEntityService;
     private final PropietarioDTOConverter propietarioDTOConverter;
-    private final JwtProvider jwt;
+    private final JwtProvider jwt; // TODO ¿Qué hacen todas estas clases aquí?
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
     private final InmobiliariaService inmobiliariaService;
     private final ConverterInmobiliariaDto converterInmobiliariaDto;
@@ -51,7 +51,7 @@ public class PropietarioController {
                     content = @Content),
     })
     @GetMapping("/")
-    public ResponseEntity<List<User>> findAll(){
+    public ResponseEntity<List<User>> findAll(){ // TODO ¿Seguro que no había un DTO más adecuado?
 
         List<User> usuarios = userEntityService.loadUserByRol(UserRole.PROPIETARIO);
         if(usuarios.isEmpty()){
@@ -85,6 +85,7 @@ public class PropietarioController {
 
 
         if(propietario.isPresent()){
+            // TODO No entiendo bien esta condición
             if(!userEntityService.loadUserById(id).isEmpty() && !userLogged.getRoles().equals(UserRole.ADMIN) && !propietario.get().getId().equals(userLogged.getId())){
                 return ResponseEntity.notFound().build();
             }

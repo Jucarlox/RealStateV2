@@ -15,7 +15,7 @@ public class InteresadoDTOConverter {
 
     public Interesa converterinteresa(GetInteresaDTO i) {
         return Interesa.builder()
-                .createdDate(LocalDateTime.now())
+                .createdDate(LocalDateTime.now()) // TODO ....
                 .mensaje(i.getMensaje())
                 .build();
     }

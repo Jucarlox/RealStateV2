@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/inmobiliaria")
 public class InmobiliariaController {
 
-    private final ViviendaService viviendaService;
+    private final ViviendaService viviendaService; // TODO Este servicio no se usa
     private final InmobiliariaService inmobiliariaService;
     private final UserEntityService userEntityService;
     private final ConverterInmobiliariaDto converterInmobiliariaDto;
