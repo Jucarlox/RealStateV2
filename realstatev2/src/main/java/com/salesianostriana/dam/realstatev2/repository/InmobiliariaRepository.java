@@ -1,9 +1,13 @@
 package com.salesianostriana.dam.realstatev2.repository;
 
 import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
+import com.salesianostriana.dam.realstatev2.model.Vivienda;
 import com.salesianostriana.dam.realstatev2.users.model.User;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface InmobiliariaRepository extends JpaRepository<Inmobiliaria, Long> {
 
@@ -17,4 +21,6 @@ public interface InmobiliariaRepository extends JpaRepository<Inmobiliaria, Long
             )
             """, nativeQuery = true)
     Boolean findByGestoresId(Inmobiliaria inmobiliaria);
+
+
 }

@@ -1,6 +1,7 @@
 package com.salesianostriana.dam.realstatev2.users.services;
 
 import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
+import com.salesianostriana.dam.realstatev2.model.Vivienda;
 import com.salesianostriana.dam.realstatev2.services.InmobiliariaService;
 import com.salesianostriana.dam.realstatev2.services.base.BaseService;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateGestorDto;
@@ -142,5 +143,10 @@ public class UserEntityService extends BaseService<User, UUID, UserEntityReposit
         } else {
             return null;
         }
+    }
+
+
+    public List<User> findAllUserVivienda() {
+        return repositorio.findAll();
     }
 }

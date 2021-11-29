@@ -65,7 +65,7 @@ public class Vivienda implements Serializable {
 
 
     @Builder.Default
-    @OneToMany(mappedBy = "vivienda")
+    @OneToMany(mappedBy = "vivienda", fetch = FetchType.EAGER)
     private List<Interesa> interesas = new ArrayList<>();
 
 
