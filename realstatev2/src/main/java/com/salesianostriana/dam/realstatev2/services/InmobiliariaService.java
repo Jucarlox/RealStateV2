@@ -1,11 +1,14 @@
 package com.salesianostriana.dam.realstatev2.services;
 
 import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
+import com.salesianostriana.dam.realstatev2.model.Vivienda;
 import com.salesianostriana.dam.realstatev2.repository.InmobiliariaRepository;
 import com.salesianostriana.dam.realstatev2.services.base.BaseService;
 import com.salesianostriana.dam.realstatev2.users.model.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class InmobiliariaService extends BaseService<Inmobiliaria, Long, InmobiliariaRepository> {
@@ -26,4 +29,5 @@ public class InmobiliariaService extends BaseService<Inmobiliaria, Long, Inmobil
             }
         return comprobacion;
     }
+
 }

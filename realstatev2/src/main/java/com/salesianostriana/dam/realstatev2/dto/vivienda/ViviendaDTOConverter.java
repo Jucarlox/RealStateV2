@@ -18,6 +18,19 @@ public class ViviendaDTOConverter {
 
     }
 
+    public ViviendaInteresDTO viviendaToGetViviendaSummarizedDTOA(Vivienda m) {
+        return ViviendaInteresDTO
+                .builder()
+                .id(m.getId())
+                .titulo(m.getTitulo())
+                .descripcion(m.getDescripcion())
+                .avatar(m.getAvatar())
+                .precio(m.getPrecio())
+
+                .build();
+
+    }
+
     public GetViviendaDTO viviendaToGetViviendaDTO(Vivienda v) {
         return GetViviendaDTO
                 .builder()
@@ -41,4 +54,7 @@ public class ViviendaDTOConverter {
 
                 .build();
     }
+
+
+
 }

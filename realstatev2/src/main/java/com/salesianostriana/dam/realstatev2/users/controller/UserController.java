@@ -1,7 +1,13 @@
 package com.salesianostriana.dam.realstatev2.users.controller;
 
+import com.salesianostriana.dam.realstatev2.dto.propietario.GetPropietarioViviendaDto;
+import com.salesianostriana.dam.realstatev2.dto.propietario.PropietarioDTOConverter;
+import com.salesianostriana.dam.realstatev2.dto.vivienda.GetViviendaSummarizedDTO;
+import com.salesianostriana.dam.realstatev2.dto.vivienda.ViviendaDTOConverter;
+import com.salesianostriana.dam.realstatev2.dto.vivienda.ViviendaInteresDTO;
 import com.salesianostriana.dam.realstatev2.model.Inmobiliaria;
 import com.salesianostriana.dam.realstatev2.model.Interesa;
+import com.salesianostriana.dam.realstatev2.model.Vivienda;
 import com.salesianostriana.dam.realstatev2.services.InmobiliariaService;
 import com.salesianostriana.dam.realstatev2.services.InteresaService;
 import com.salesianostriana.dam.realstatev2.users.dto.CreateGestorDto;
@@ -20,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +36,8 @@ public class UserController {
     private final UserDtoConverter userDtoConverter;
     private final InmobiliariaService inmobiliariaService;
     private final InteresaService interesaService;
+    private final PropietarioDTOConverter propietarioDTOConverter;
+    private final ViviendaDTOConverter viviendaDTOConverter;
 
     @PostMapping("/auth/register/user")
     public ResponseEntity<GetUserDto> nuevoUsuario(@RequestBody CreateUserDto newPropietario) {
@@ -96,5 +105,30 @@ public class UserController {
         }
         return  ResponseEntity.ok(interesado.get());
     }
+
+
+    /////////////////////////////////////////////ACT CLASE/////////////////////////////////////////////////////////
+    @GetMapping("/viviendas/propietario")
+    public ResponseEntity<List<Vivienda>> findViviendasPropietario(@AuthenticationPrincipal User userLogged){
+        List<Vivienda> viviendas= userLogged.getViviendas();
+        if(viviendas.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        else{
+            return ResponseEntity.ok().body(viviendas);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    /////////////////////////////////////////////ACT CLASE/////////////////////////////////////////////////////////
+
 
 }

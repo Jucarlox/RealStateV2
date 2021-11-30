@@ -19,6 +19,14 @@ import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+
+@NamedEntityGraph(
+        name = User.USER_CON_VIVIENDA,
+        attributeNodes = {
+                @NamedAttributeNode("viviendas")
+        }
+)
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Data
@@ -26,6 +34,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Builder
 public class User implements UserDetails {
+    public static final String USER_CON_VIVIENDA= "grafo-user-con-vivienda";
     @Id @GeneratedValue(generator = "UUID")
     @GenericGenerator(
             name = "UUID",
@@ -59,7 +68,7 @@ public class User implements UserDetails {
     private Inmobiliaria inmobiliaria;
 
     @Builder.Default
-    @OneToMany(mappedBy = "propietario",fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "propietario",fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
     @JsonIgnore
     private List<Vivienda> viviendas=new ArrayList<>();
 

@@ -15,4 +15,14 @@ public interface InteresaRepository extends JpaRepository<Interesa,Long> {
             GROUP BY interesado_id)
             """, nativeQuery = true)
     List<Interesa> findInteresados();
+
+
+
+    @Query(value = """
+            SELECT * FROM Interesa int 
+            WHERE int.interesado_id IN
+            (SELECT interesado_id FROM Interesa i
+            GROUP BY interesado_id)
+            """, nativeQuery = true)
+    List<Interesa> findInteresados2();
 }
