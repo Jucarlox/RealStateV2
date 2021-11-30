@@ -149,4 +149,10 @@ public class UserEntityService extends BaseService<User, UUID, UserEntityReposit
     public List<User> findAllUserVivienda() {
         return repositorio.findAll();
     }
+
+    public List<Vivienda> findAllViviendasToPropietario(UUID id ) throws UsernameNotFoundException{
+        return this.repositorio.findAllViviendasToPropietario(id);
+    }
+
+
 }

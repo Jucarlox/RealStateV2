@@ -1,9 +1,11 @@
 package com.salesianostriana.dam.realstatev2.users.repository;
 
+import com.salesianostriana.dam.realstatev2.model.Vivienda;
 import com.salesianostriana.dam.realstatev2.users.model.User;
 import com.salesianostriana.dam.realstatev2.users.model.UserRole;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +19,9 @@ public interface UserEntityRepository extends JpaRepository<User, UUID> {
 
     @EntityGraph("grafo-user-con-vivienda")
     List<User> findAll();
+
+    @Query(value = "select v.*  from vivienda v where user_id = USER_ID" , nativeQuery=true)
+    List<Vivienda> findAllViviendasToPropietario(UUID USER_ID);
 
 
 
