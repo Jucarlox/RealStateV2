@@ -110,7 +110,8 @@ public class UserController {
     /////////////////////////////////////////////ACT CLASE/////////////////////////////////////////////////////////
     @GetMapping("/viviendas/propietario")
     public ResponseEntity<List<Vivienda>> findViviendasPropietario(@AuthenticationPrincipal User userLogged){
-        List<Vivienda> viviendas= userEntityService.findAllViviendasToPropietario(userLogged.getId());
+        //List<Vivienda> viviendas= userEntityService.propietariVivienda(userLogged.getId());
+        List<Vivienda> viviendas= userLogged.getViviendas();
         if(viviendas.isEmpty()){
             return ResponseEntity.notFound().build();
         }
