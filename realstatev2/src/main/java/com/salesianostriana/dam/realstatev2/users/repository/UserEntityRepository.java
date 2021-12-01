@@ -20,8 +20,8 @@ public interface UserEntityRepository extends JpaRepository<User, UUID> {
     @EntityGraph("grafo-user-con-vivienda")
     List<User> findAll();
 
-    @Query(value = "select v.*  from vivienda v where user_id = USER_ID" , nativeQuery=true)
-    List<Vivienda> findAllViviendasToPropietario(UUID USER_ID);
+    @Query(value = "select *  from vivienda v where USER_ID = :userId" , nativeQuery=true)
+    List<Vivienda> findAllViviendasToPropietario(UUID userId);
 
 
 
